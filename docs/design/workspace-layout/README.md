@@ -26,6 +26,7 @@ A sync provider is transport, not a database, lock service, privacy authority, o
 | Selection, migration, backup, deletion, and recovery | [LIFECYCLE.md](LIFECYCLE.md) |
 | Synthetic failure and threat checks | [VALIDATION.md](VALIDATION.md) |
 | Implement the host against this design | [IMPLEMENTATION-HANDOFF.md](IMPLEMENTATION-HANDOFF.md) |
+| Define per-subject graph and progress records stored here | [Curriculum DAGs](../curriculum-dag/README.md) |
 
 ## Boundaries
 

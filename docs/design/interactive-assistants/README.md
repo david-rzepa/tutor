@@ -24,6 +24,7 @@ This order derives from the [research decision kernel](../../research/learning-d
 | Understand creation through retirement | [LIFECYCLE.md](LIFECYCLE.md) |
 | Choose the first platform and security boundary | [PLATFORM-DECISION.md](PLATFORM-DECISION.md) |
 | Persist profiles, curricula, modules, sessions, and evidence | [Portable workspace layout](../workspace-layout/README.md) |
+| Select an objective from a learner’s subject path and return progress evidence | [Curriculum DAGs](../curriculum-dag/README.md) |
 | Apply safety, privacy, accessibility, or generation gates | [QUALITY-GATES.md](QUALITY-GATES.md) |
 | Audit research traceability and uncertainty | [DESIGN-BASIS.md](DESIGN-BASIS.md) |
 | Trace an age-11 French session end to end | [FRENCH-WALKTHROUGH.md](FRENCH-WALKTHROUGH.md) |

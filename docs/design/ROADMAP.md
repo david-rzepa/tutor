@@ -12,7 +12,7 @@ This is the context-efficient traceability index from approved design to canonic
 | portable workspace contract | [#9](https://github.com/david-rzepa/tutor/issues/9) done | research | `workspace-layout/` |
 | curriculum DAG/progress contract | [#10](https://github.com/david-rzepa/tutor/issues/10) done | #1, #3, #9 | `curriculum-dag/` |
 | consented feedback, effectiveness analysis, learning-velocity KPI | [#5](https://github.com/david-rzepa/tutor/issues/5) | B-001: reviewed consent/transcript lifecycle | `PRIVACY-FEEDBACK.md`, `PROGRESS-EVALUATION.md` |
-| safeguarding, consent, authority, data lifecycle | [#14](https://github.com/david-rzepa/tutor/issues/14) | #1; human legal/deployment decisions remain gates | new design boundary |
+| safeguarding, consent, authority, data lifecycle | [#14](https://github.com/david-rzepa/tutor/issues/14) | #1; human legal/deployment decisions remain gates | [safeguarding/privacy contract](safeguarding-privacy/README.md) |
 | curriculum/evidence schemas and validation | [#12](https://github.com/david-rzepa/tutor/issues/12) | #10 | schema package + property tests |
 | immutable multi-user workspace repository | [#13](https://github.com/david-rzepa/tutor/issues/13) | #7, #9 | repository + fault/isolation tests |
 | deterministic evidence projection and readiness | [#15](https://github.com/david-rzepa/tutor/issues/15) | #12 | learning-state package + properties |

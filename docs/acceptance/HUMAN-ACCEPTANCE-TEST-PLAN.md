@@ -1,168 +1,128 @@
 # Human-driven acceptance test plan
 
-- Plan version: **1.2.0**
+- Plan version: **3.1.0**
 - Product baseline: repository `main` at or after goal #22
 - Decision owner: the human acceptance owner; never the facilitating agent
 
 ## Contract
 
-This plan evaluates the current tutor as a set of local, composable product journeys. It does not certify a deployment. Use only synthetic personas and a disposable `tutor.workspace/v1` root chosen for the run. Store checkpoints/evidence outside the repository and cloud-synced folders unless the tester has explicitly chosen a private location. Never capture names, contact details, real learner records, raw chat, screenshots containing identity, secrets, or public issue payloads.
+This plan uses scarce human attention only for judgments automation cannot make reliably: first-use comprehension, aesthetics, affordance clarity, perceived feedback and completion, confidence in controls, accessibility experience, and journey coherence. Unit, integration, schema, protocol, isolation, digest, and source-inspection checks are automated prerequisites and are never presented as human actions.
 
-The facilitator presents one action without its expected result, records the tester's observation category, and only then reveals the expectation below. The human alone assigns action outcomes, scenario verdicts (`pass`, `fail`, `blocked`, `skipped`), severities, and final `go`, `no-go`, or `conditional` decision.
+Use only synthetic personas and local fixtures. Store privacy-minimized checkpoints and evidence outside the repository and cloud-synced folders unless the tester explicitly chooses a private location. Never capture identity, real learner records, raw chat, secrets, or screenshots containing them.
+
+Before each action, the facilitator states the expected experience and then asks the human to try exactly one thing. The human may give free-form feedback at any moment. Feedback is acknowledged immediately, sanitized into a concise item, and kept separate from observations and verdicts. The human alone assigns action outcomes, scenario verdicts, severities, and the final release decision.
+
+## Automated prerequisite report
+
+Before involving the human, the facilitator records the product commit, platform/browser, plan version, and access route; runs `npm test`; builds the three fixtures; verifies the loopback server responds; and confirms the disposable `test_only` workspace and checkpoint binding. A failed prerequisite blocks the human run but is not a human verdict.
+
+Automated evidence covers network/origin policy, sandboxing, schemas, event sequencing, privacy minimization, authority/isolation, curriculum validity, conservative progress, migration/recovery, and checkpoint integrity. Report that evidence compactly; never ask the human to inspect developer tools, JSON, logs, digests, reason codes, source code, or command output.
 
 ## Availability and platforms
 
-| Surface | Status for this plan |
+| Human-visible surface | Status |
 |---|---|
-| Local sandboxed host, three tiny assistants, pause/stop/access controls | Runnable now on Windows |
-| Synthetic profile, authority, curriculum, orchestrator, repository, and lifecycle modules | Runnable now with command assistance |
-| Unified non-developer onboarding-to-lesson application | Unavailable; record affected journey as blocked |
-| Visual/non-visual curriculum explorer (#19) | Runnable now with command assistance |
-| Real learner feedback, transcript collection, aggregate disclosure, public issues (#5) | Prohibited pending deployment-specific H-001–H-008 authority |
-| macOS/Linux product run | Unobserved; fixtures/tests are portable claims, not human acceptance |
+| Three local tiny-assistant fixtures | Runnable on Windows |
+| Pause, resume, stop, pointer, and keyboard controls | Runnable on Windows |
+| Curriculum explorer render and text summary | Runnable after agent setup |
+| Unified onboarding-to-lesson application | Unavailable; critical journey coverage remains blocked |
+| Agent-led browser conversation with inline activity history | Unavailable |
+| Real learner/deployment feedback flows | Prohibited pending deployment-specific authority |
+| macOS/Linux experience | Unobserved |
 
-Supported test browsers are current Chromium or Edge on Windows. Record other browsers as exploratory. Required roles are one acceptance owner and, for child/pre-reader scenarios, one adult acting as synthetic guardian/caregiver. No child or real learner participates.
+Supported test browsers are current Chromium or Edge on Windows. Other browsers are exploratory. No child or real learner participates; an adult may assess the synthetic child and pre-reader experiences.
 
 ## Preflight and reset
 
-1. Check out the exact product checkpoint on `main`; record the commit hash, Windows/browser versions, plan version, and access route without personal identity.
-2. Confirm Node.js 22 or newer and run `npm test`. A failure blocks product scenarios but is not itself a human acceptance verdict.
-3. Create a disposable directory containing `workspace.json` with opaque `workspace_id` and `test_only: true`. Never point lifecycle/deletion actions at the repository or a real workspace.
-4. Build the fixtures with the three commands in `examples/interactive-assistants/README.md`, then run `node src/interactive-assistant-harness/server.js 41739`. Use the printed loopback URL.
-5. Initialize the facilitator checkpoint outside the repository with the plan file, version `1.2.0`, product commit, disposable `workspace.json`, opaque run ID, and `--synthetic-confirmed`. The helper rejects a workspace not explicitly marked `test_only` and records no path. Older checkpoints fail closed because the age-11 language criterion changes acceptance meaning.
-6. Before every scenario, reset only its synthetic records or rebuild the disposable fixture. Stop the loopback server normally. Lifecycle deletion is allowed only after its exact preview is reviewed and only for the disposable root. The checkpoint helper deletes only its own file after exact run-ID confirmation.
+1. Use the exact product checkpoint on `main`; record only non-identifying environment facts.
+2. Run every automated prerequisite without delegating it to the human.
+3. Create a disposable `tutor.workspace/v1` manifest with an opaque `workspace_id` and `test_only: true`.
+4. Build the fixtures and start `node src/interactive-assistant-harness/server.js 41739` on its printed loopback URL.
+5. Initialize the checkpoint with plan version `3.1.0`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow and age-11 language criteria changed acceptance meaning.
+6. Reset by reloading a fresh fixture or rebuilding an in-memory explorer model. Stop the server normally. Delete checkpoint or workspace state only with the plan's exact confirmation boundaries.
 
-## Synthetic personas
+## Feedback workflow
 
-| ID | Persona and authority | Subject fixture | Access route |
-|---|---|---|---|
-| `per_adult` | Adult self-authority; uncertain prior knowledge | mental mathematics | keyboard and pointer |
-| `per_child` | Age-11 fictional learner; synthetic guardian grants scoped authority | science: reversible/irreversible change | keyboard, reduced motion |
-| `per_prereader` | Pre-reader; synthetic caregiver mediates instructions and responses | music ordering | read-aloud/delegate, non-timed |
-| `per_access` | Adult with a declared interaction barrier, no diagnosis | any of the above | keyboard-only or non-visual substitute |
-
-Do not infer learning style, diagnosis, intelligence, or fixed ability from these fixtures.
+- Accept feedback immediately in ordinary language, even while an action is active.
+- Acknowledge the point before returning to the action. Do not force feedback into an observation category or verdict.
+- Store only a concise privacy-safe paraphrase, feedback kind, and optional scenario/action reference; never raw chat or identity.
+- At run end, show the complete feedback register, merge duplicates only with human approval, and let the human mark any item non-actionable.
+- Convert every approved actionable item into a durable ZzzOps goal using `$add-zzzops-goal`. Preserve the originating scenario/action, desired user outcome, observable acceptance evidence, and critical constraints. Complete goal capture before asking for the final go/no-go decision.
 
 ## Result rules
 
-- `pass`: every required action was observed and all pass criteria hold.
-- `fail`: runnable behavior diverged. Default severity is `blocking` for safety/privacy/isolation/data loss/stop failures, `major` for a broken core learning journey or inaccessible required route, and `minor` for recoverable presentation defects.
-- `blocked`: the action could not run because a named capability, authority, or environment prerequisite is unavailable. This is coverage debt, not a pass or product defect.
-- `skipped`: the human deliberately omitted a runnable scenario and records why outside the privacy-minimized checkpoint.
+- `pass`: every required action was observed and all experiential pass criteria hold.
+- `fail`: a runnable experience diverged. Default severity is `major` for a broken or inaccessible core journey and `minor` for a recoverable presentation defect. A stop/safety failure is `blocking`.
+- `blocked`: a named user-facing capability or required environment is unavailable. This is coverage debt, not a pass.
+- `skipped`: the human deliberately omitted a runnable scenario.
 
-Evidence references name local artifacts only, such as `screens/teach_success.png` or `records/run_a_summary.json`; do not put observations or identity into filenames. A release candidate has no human-assigned blocking failures, no unexplained major failures, and no unacknowledged blocked critical coverage. These rules inform the human; they do not compute the decision.
+Evidence references may name privacy-safe local artifacts such as `screens/first_use.png`; do not put observations or identity into filenames.
 
-## Scenario index
+## Human scenario index
 
-| ID | Journey | Persona/subject | Status |
-|---|---|---|---|
-| `scn_shell` | host and tiny assistant | all three subjects | runnable |
-| `scn_onboard` | authority, profile, curriculum correction | adult, child, pre-reader | command-assisted |
-| `scn_adapt` | error simplification, success fading, misconception/question bridge | cross-domain | command-assisted + browser |
-| `scn_control` | pause, stop, and inaccessible substitution | access persona | runnable |
-| `scn_learning` | delayed retention/transfer and conservative progress | adult math | command-assisted |
-| `scn_privacy` | isolation, minimization, revocation, transcript boundary | two users | command-assisted |
-| `scn_recovery` | migration, backup, tamper detection, restore | disposable workspace | command-assisted |
-| `scn_explorer` | equivalent DAG and non-visual progress | any | gated by #19 |
-| `scn_external` | feedback/public-issue boundary | synthetic | prohibited by #5 authority gate |
+| ID | Human judgment | Status |
+|---|---|---|
+| `scn_first_use` | comprehension, aesthetics, and perceived completion | runnable |
+| `scn_interaction` | affordances, feedback, help, pointer/keyboard parity | runnable |
+| `scn_control` | confidence in pause, resume, and stop | runnable |
+| `scn_access` | keyboard-only and reduced-motion experience | runnable |
+| `scn_explorer` | visual/non-visual comprehension and orientation | agent setup required |
 
 ## Scenario cards
 
-### `scn_shell` — local host and tiny assistants
+### `scn_first_use` — immediate understanding and visual quality
 
-Setup: server running; fixture URLs for `adult_math_recall`, `science_change`, and `music_order`. Reset: reload a fresh fixture URL. Default failure severity: major; sandbox/network escape is blocking.
+Setup: fresh URLs for all three fixtures. Reset: reload each URL. Default failure severity: major for incomprehensible completion; minor for recoverable visual polish.
 
-1. `act_launch`: Open each fixture. Expected after observation: one small, subject-distinct activity loads without remote assets, sign-in, profile/path disclosure, or full-game setup. The science and music fixtures use the explicit age-11 persona and present a direct question with an obvious response; the math fixture demonstrates an explicit adult alternative. No wording implies ability, diagnosis, or learning style. Inspect: browser network shows loopback/local assets only and the built fixture records its learner persona.
-2. `act_operate`: Complete one item using pointer, then keyboard. Expected: focus is visible, status/feedback is perceivable, and the same target operation is possible without timing pressure.
-3. `act_help`: Request help and retry. Expected: one bounded scaffold appears without revealing a full answer history or leaving the single activity surface.
+1. `act_orient`: Open each fixture without further instruction and pause before interacting. Expected: within a few seconds, the purpose, available action, and subject are understandable; wording feels learner-facing rather than technical. Science and music declare the age-11 persona and ask a direct question with an obvious response, while math demonstrates an explicit adult alternative. No wording implies ability, diagnosis, or a fixed learning style.
+2. `act_visual`: Compare the three initial screens at a comfortable browser size. Expected: hierarchy, spacing, typography, contrast, and subject distinction feel deliberate and readable, with no clipping or visually confusing controls.
+3. `act_finish`: Complete one fixture and stop interacting. Expected: feedback and the end of the activity are unmistakable, with a clear sense of whether anything remains to do.
 
-Pass when all three subjects launch, the activity remains tiny and understandable for its declared persona, the question and response action are immediately clear, required controls work, and no remote/identity capability appears. Inspect the structured ready/attempt/help/complete events for session and sequence validity without identity. Capture at most one sanitized screenshot per subject, an event-schema summary, and a network-origin summary.
+Pass when all three experiences are understandable for their declared persona on first use, visually coherent, appropriately concise, and unambiguous at completion.
 
-### `scn_onboard` — authority, profile, curriculum, and correction
+### `scn_interaction` — affordances, feedback, and help
 
-Setup: fresh synthetic repository; use module tests or a thin command driver for `src/tutor-core/profiles` and `src/tutor-core/curricula`. Reset: remove only the disposable workspace. Default severity: blocking for authority/isolation, major otherwise.
+Setup: fresh fixture URL. Reset: reload between attempts. Default failure severity: major for an inaccessible required operation; minor for recoverable presentation ambiguity.
 
-1. `act_adult`: Initialize `per_adult` with self-authority, access preferences, and a math goal. Expected: an inspectable notice precedes consent; uncertain placement stays uncertain; an immutable private profile and subject curriculum version are created.
-2. `act_child`: Initialize `per_child` through synthetic guardian authority. Expected: scoped guardian authority is explicit; child self-authority is not invented; age does not hard-code subject or ability.
-3. `act_prereader`: Initialize `per_prereader` with caregiver/delegate access. Expected: the route is caregiver-mediated and non-text alternatives preserve the intended construct.
-4. `act_correct`: Correct one goal/access preference and reject one placement inference. Expected: a new immutable version records provenance; unrelated goals and evidence do not change; the prior version remains inspectable.
+1. `act_operate`: Complete the same target operation once with the pointer and once using only the keyboard. Expected: actionable elements are discoverable, focus is visible, both routes feel practical, and neither requires timing pressure.
+2. `act_feedback`: Try one incorrect response and then retry. Expected: feedback is immediate, understandable, non-punitive, and makes the next action obvious without disclosing a full answer history.
+3. `act_help`: Find and request help before completing an item. Expected: help is easy to discover, gives one bounded scaffold, and leaves the learner confidently able to retry.
 
-Pass when all three populations complete through explicit authority, records remain isolated and correctable, and the generated DAGs are subject-grounded rather than age- or French-specific. Inspect authority/profile/curriculum schema and version IDs; capture a minimized version-lineage summary.
+Pass when a learner can discover, operate, recover, and request support without developer knowledge or unexplained dead ends.
 
-### `scn_adapt` — tailored teaching adaptations
+### `scn_control` — pause, resume, and stop confidence
 
-Setup: synthetic ready node and reviewed activity; use orchestrator traces plus the matching fixture where visible. Reset: start a fresh deterministic session. Default severity: major.
+Setup: any fresh running fixture. Reset: reload. Default failure severity: blocking for stop; major otherwise.
 
-1. `act_errors`: Submit the same plausible wrong operation repeatedly. Expected: exactly one variable changes toward an easier scaffold or prerequisite; difficulty does not collapse multiple dimensions and no mastery is claimed.
-2. `act_success`: Complete a guided item successfully. Expected: one support fades; one helped success does not establish mastery.
-3. `act_misconception`: Provide evidence matching a known misconception. Expected: the tutor requests a tiny contrast-and-test assistant tailored to that misconception.
-4. `act_question`: Ask a concise learner question. Expected: the agent answers briefly, then returns to an interactive assistant when an action would clarify or consolidate the answer.
+1. `act_pause`: Begin an attempt, pause, wait briefly, and resume. Expected: the labels and state change are understandable; the experience feels safely paused and resumes without surprise or duplicated work.
+2. `act_stop`: Begin a fresh attempt, stop, and try to continue. Expected: the finality of Stop is clear before and after activation, later interaction is rejected understandably, and the learner remains in control.
 
-Pass when adaptations are inspectable, bounded to one variable, preserve access needs, and favor tailored mini-assistants over long chat. Inspect the decision reason codes, input versions, fallback, and next-verification fields; capture a sanitized decision summary.
+Pass when controls use learner-facing language, their consequences are predictable, and Stop is final.
 
-### `scn_control` — learner control and access substitution
+### `scn_access` — accessible experience
 
-Setup: any running fixture plus a synthetic inaccessible-route signal. Reset: new session. Default severity: blocking for stop; major for access.
+Setup: synthetic access persona; keyboard-only use and reduced-motion browser preference. Reset: restore normal preference and reload. Default failure severity: major.
 
-1. `act_pause`: Pause mid-attempt and resume. Expected: interaction stops changing while paused and resumes without duplicate evidence or lost learner control.
-2. `act_stop`: Stop mid-attempt and try another event. Expected: the session remains stopped and rejects later teaching events.
-3. `act_substitute`: Mark the current mechanic inaccessible. Expected: the route changes while the knowledge target/difficulty does not; access friction is not recorded as a knowledge error.
+1. `act_keyboard`: Navigate and complete a fixture without pointer input. Expected: reading and focus order are logical, every required operation is reachable, status changes are perceivable, and focus never becomes lost.
+2. `act_motion`: Use the fixture with reduced motion and browser reflow/zoom. Expected: no meaning or operation depends on animation, layout remains understandable, and controls do not overlap or disappear.
 
-Pass when pause/resume is stable, stop is final, and an equivalent accessible route exists without lowering the learner model. Inspect sequence/checkpoint events and the access-substitution reason; capture a sanitized control-event summary.
+Pass when the experience remains understandable and operable without pointer precision, motion, or a fixed viewport.
 
-### `scn_learning` — durable learning and progress interpretation
+### `scn_explorer` — curriculum comprehension and orientation
 
-Setup: deterministic adult-math evidence trace with varied attempts. Reset: discard the synthetic trace. Default severity: major.
+Setup: the facilitator renders one synthetic curriculum explorer and equivalent text summary; the human is never asked to run or inspect commands. Reset: discard the synthetic render. Default failure severity: major; false mastery is blocking.
 
-1. `act_immediate`: Record one independent in-session success. Expected: immediate performance improves but mastery remains unconfirmed.
-2. `act_delay`: Advance the injected clock and perform an unaided delayed check. Expected: evidence is tied to the immutable graph/content versions and retention is reported separately.
-3. `act_transfer`: Perform a different-context transfer item, then add contradictory evidence. Expected: transfer and contradiction affect the conservative projection; readiness explanations remain inspectable.
+1. `act_views`: Explore the visual map, grouped outline, and text/print view. Expected: each view communicates the same prerequisites, learning states, uncertainty, and available routes without relying on color alone.
+2. `act_navigate`: Navigate by keyboard, switch synthetic subjects, and refresh once. Expected: labels and focus make location clear, the same node remains oriented when possible, and updates do not feel disorienting.
+3. `act_truth`: Compare retained, learning, blocked, and contradictory-evidence examples. Expected: wording feels honest and understandable; time, clicks, or one success are never presented as mastery.
+4. `act_control`: Request a correction, choose an available node, and stop. Expected: available actions are obvious, blocked choices explain themselves, and nothing starts unexpectedly.
 
-Pass when progress separates immediate performance, delayed retention, transfer, and uncertainty; speed/flow/completion alone never becomes mastery. Inspect immutable evidence/graph versions and the readiness explanation; capture the projection summary without response content.
+Pass when visual and non-visual experiences communicate equivalent meaning, preserve orientation, and present progress truthfully.
 
-### `scn_privacy` — isolation, minimization, and revocation
+## Unavailable journey coverage
 
-Setup: two opaque synthetic users in one disposable workspace. Reset: delete the disposable root only through lifecycle preview/confirmation. Default severity: blocking.
-
-1. `act_isolate`: Read/publish as each user and attempt a cross-user read. Expected: own records succeed; cross-user access is denied without leaking content.
-2. `act_slice`: Inspect an assistant initialization envelope. Expected: it has an ephemeral alias and current activity slice, but no identity, absolute path, full profile/history, authority record, or transcript.
-3. `act_revoke`: Revoke one authority and retry affected profile use. Expected: revocation is append-only, inspectable, and immediately prevents that use.
-4. `act_transcript`: Search the disposable workspace and checkpoint artifacts for the spoken/typed test phrase. Expected: no raw chat/transcript is retained; only structured authorized evidence exists.
-
-Pass only when isolation fails closed, assistant data is minimized, revocation works, and raw dialogue is absent. Capture only schema keys, denial reason codes, and the negative transcript-search result.
-
-### `scn_recovery` — migration, backup, and recovery
-
-Setup: explicitly disposable `test_only: true` workspace with synthetic records; never a real workspace. Reset: retain source until verified, then remove test directories through exact preview. Default severity: blocking for loss/scope escape, major otherwise.
-
-1. `act_migrate`: Plan and run copy/verify/switch migration with an injected interruption, then resume. Expected: source remains intact, staged bytes are digest-verified, and only the machine-local link switches.
-2. `act_archive`: Create backup and scoped export, then inspect manifests. Expected: provenance and user scope are explicit; credentials, raw-reserved data, and other users are absent.
-3. `act_tamper`: Change one archived byte and attempt restore. Expected: restore fails on digest mismatch without publishing a target.
-4. `act_restore`: Restore an untampered archive and preview user deletion. Expected: round-trip records preserve provenance; deletion lists exact scope/recovery boundary and requires human authority plus exact confirmation.
-
-Pass when interruption is resumable, tampering fails closed, exports preserve isolation, and no destructive action can escape the disposable root. Capture manifest/digest IDs, failure reason codes, and the privacy-safe deletion receipt—not paths or record bodies.
-
-### `scn_explorer` — curriculum DAG and equivalent progress views
-
-Setup: build a synthetic explorer model from one validated curriculum, immutable graph, projection, and readiness result; render its portfolio document and text summary. Reset: discard the in-memory model and rendered synthetic artifact. Default severity: major; cross-user/version leakage or false mastery is blocking.
-
-1. `act_views`: Compare the map, state-grouped outline, and text/print summary. Expected: every node, prerequisite alternative, state, uncertainty explanation, graph version, and bounded route has equivalent non-color meaning in each view.
-2. `act_navigate`: Use native keyboard controls and switch among three synthetic curricula, then refresh the selected projection. Expected: subject/version tabs are semantic, focus stays on the same node when it still exists, updates are announced, and reflow/reduced-motion modes lose no operation.
-3. `act_truth`: Inspect a retained node, a provisional/learning node, a blocked node, and contradictory evidence. Expected: only retained/transfer evidence receives precisely named recognition; time, clicks, flow, and one-session success never become mastery.
-4. `act_control`: Request a correction, choose a ready node, and stop. Expected: each produces a graph-version-bound host intent; no action starts a session automatically, a blocked node cannot be chosen, and stop/change-goal remain visible.
-
-Pass when visual and non-visual meaning/operations are equivalent, multiple curricula and graph revisions preserve orientation, progress stays truthful, and the output contains neither learner identity nor raw evidence. Capture a sanitized semantic-output summary and keyboard/focus observation; do not capture record bodies.
-
-### `scn_external` — feedback and public-write boundary
-
-Status: prohibited until a named deployment has human-approved applicable H-001–H-008 decisions for #5. Record one `unavailable` observation and a human `blocked` verdict. Expected after observation: no real transcript collection, aggregate disclosure, or public GitHub issue write is available; any future external write must show the exact privacy-safe payload and digest for human confirmation. Default blocked severity: blocking coverage/authority gate, not a current product defect.
+Do not simulate unavailable product journeys with module tests or command output. Report unified onboarding-to-lesson, conversational browser orchestration with inline activity history, deployment feedback, and untested platforms as unaccepted limitations. Automated component coverage does not make these journeys runnable.
 
 ## Release-readiness summary
 
-The facilitator produces counts by verdict, blocking failures, blocking coverage gates, per-scenario results, active/gated coverage, plan digest, product checkpoint, and artifact references. The human reviews missing scenarios and known unavailable capabilities, corrects any result, and records exactly one decision:
-
-- `go`: accepted for the explicitly tested local scope only;
-- `conditional`: named non-blocking conditions remain;
-- `no-go`: a blocking failure, unacceptable major failure, or critical unknown prevents acceptance.
-
-The summary must say that macOS/Linux, unified product onboarding, #5 deployment feedback, and any runnable scenario the human skipped are unaccepted whenever they were not directly observed. No agent-generated summary is final until the human approves or corrects it.
+Report automated prerequisite status separately from human scenario verdicts. Include verdict counts, blocking failures, unavailable journey coverage, skipped scenarios, plan digest, product checkpoint, privacy-safe artifacts, and the reviewed feedback-to-goal register. The human corrects the summary and records exactly one decision: `go`, `conditional`, or `no-go`. No agent-generated summary or automated suite replaces that decision.

@@ -35,6 +35,7 @@ test("checkpoint lifecycle records every human result, pause/resume, summary, de
   const value = await fixture();
   try {
     const initialized = initialize(value); assert.deepEqual(initialized.workspace, { workspace_id: "wrk_acceptance", schema: "tutor.workspace/v1", test_only: true });
+    invoke(["feedback", ...binding(value), "--kind", "ux", "--summary", "Completion state was not obvious", "--scenario", "scn_success", "--action", "act_probe", "--assigned-by", "human"]);
     const cases = [
       ["scn_success", "as-expected", "match", "pass", "not-applicable", "artifacts/success.json"],
       ["scn_failure", "different", "mismatch", "fail", "major", "artifacts/failure.json"],
@@ -46,7 +47,7 @@ test("checkpoint lifecycle records every human result, pause/resume, summary, de
       invoke(["verdict", ...binding(value), "--scenario", scenario, "--value", verdict, "--severity", severity, "--assigned-by", "human"]);
     }
     invoke(["pause", ...binding(value)]); assert.match(invoke(["begin-action", ...binding(value), "--scenario", "scn_paused", "--action", "act_probe"], 2).error, /resumed/); invoke(["resume", ...binding(value)]);
-    const summary = invoke(["summary", ...binding(value)]); assert.deepEqual(summary.counts, { blocked: 1, fail: 1, pass: 1, skipped: 1 }); assert.equal(summary.blocking_coverage_gates, 1); assert.equal(summary.decision_required, true); assert.deepEqual(summary.evidence_refs, ["artifacts/failure.json", "artifacts/success.json"]);
+    const summary = invoke(["summary", ...binding(value)]); assert.deepEqual(summary.counts, { blocked: 1, fail: 1, pass: 1, skipped: 1 }); assert.equal(summary.blocking_coverage_gates, 1); assert.equal(summary.decision_required, true); assert.deepEqual(summary.evidence_refs, ["artifacts/failure.json", "artifacts/success.json"]); assert.equal(summary.feedback_count, 1); assert.deepEqual(summary.feedback[0], { action: "act_probe", assigned_by: "human", feedback_id: summary.feedback[0].feedback_id, kind: "ux", scenario: "scn_success", summary: "Completion state was not obvious" });
     const decided = invoke(["decide", ...binding(value), "--value", "conditional", "--assigned-by", "human"]); assert.deepEqual(decided.human_decision, { assigned_by: "human", value: "conditional" });
     const bytes = await readFile(value.checkpoint, "utf8"); assert.doesNotMatch(bytes, new RegExp(value.root.replaceAll("\\", "\\\\"))); assert.doesNotMatch(bytes, /raw observation|transcript|https?:|secret|full_name|email/i);
     assert.match(invoke(["reset", ...binding(value), "--confirm-run-id", "wrong_run"], 2).error, /exact run ID/); assert.equal(invoke(["reset", ...binding(value), "--confirm-run-id", "run_acceptance"]).status, "reset");
@@ -78,5 +79,7 @@ test("initialized checkpoint fails closed on all negative integrity paths", asyn
     assert.match(invoke(["verdict", ...binding(value), "--scenario", "scn_owner", "--value", "fail", "--severity", "major", "--assigned-by", "agent"], 2).error, /human-assigned/);
     invoke(["verdict", ...binding(value), "--scenario", "scn_owner", "--value", "fail", "--severity", "major", "--assigned-by", "human"]);
     assert.match(invoke(["decide", ...binding(value), "--value", "no-go", "--assigned-by", "agent"], 2).error, /human-assigned/);
+    assert.match(invoke(["feedback", ...binding(value), "--kind", "ux", "--summary", "See https://example.invalid/private", "--assigned-by", "human"], 2).error, /must not contain/);
+    assert.match(invoke(["feedback", ...binding(value), "--kind", "ux", "--summary", "Useful feedback item", "--assigned-by", "agent"], 2).error, /human-assigned/);
   } finally { await rm(value.root, { recursive: true, force: true }); }
 });

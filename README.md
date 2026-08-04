@@ -27,7 +27,7 @@ Open the printed `127.0.0.1` URL with `?card=science_change`, `?card=music_order
 
 ## Human acceptance
 
-Invoke [`$run-human-acceptance`](.agents/skills/run-human-acceptance/SKILL.md) in Codex to be led through one action at a time. The canonical [human acceptance plan](docs/acceptance/HUMAN-ACCEPTANCE-TEST-PLAN.md) uses only synthetic disposable workspaces, hides expected results until the tester reports an observation, and reserves verdicts and go/no-go decisions for the human.
+Invoke [`$run-human-acceptance`](.agents/skills/run-human-acceptance/SKILL.md) in Codex for human-only evaluation of UX, aesthetics, comprehension, affordances, accessibility experience, and journey coherence. The facilitator runs technical checks itself, states expectations before each action, accepts feedback at any time, and turns approved actionable feedback into ZzzOps goals before the human-owned release decision.
 
 The visual/non-visual curriculum explorer is now runnable with command assistance. Unified non-developer onboarding and real learner/public-feedback scenarios remain unavailable for the reasons recorded in the plan.
 

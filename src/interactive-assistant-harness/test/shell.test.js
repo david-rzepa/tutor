@@ -9,14 +9,28 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 test("shell launches the activity without persistent host chrome and keeps an opaque-origin sandbox", async () => {
   const html = await readFile(path.join(ROOT, "public/index.html"), "utf8");
   const script = await readFile(path.join(ROOT, "public/host-app.js"), "utf8");
+  const directShell = html.match(/<main id="activity-shell"[\s\S]*?<\/main>/)?.[0] ?? "";
   assert.match(html, /role="status"/);
   assert.match(html, /class="sr-only"/);
-  assert.doesNotMatch(html, /<header|<nav|id="start"|id="pause"|id="stop"/);
-  assert.match(script, /launchActivity\(\);/);
+  assert.doesNotMatch(directShell, /<header|<nav|id="start"|id="pause"|id="stop"/);
+  assert.match(script, /launchDirectActivity\(\);/);
   assert.match(script, /could not be loaded\.\", true/);
   assert.doesNotMatch(script, /querySelector\("#(?:start|pause|stop)"\)/);
   assert.match(html, /sandbox="allow-scripts"/);
   assert.doesNotMatch(html, /allow-same-origin|allow-forms|allow-popups|allow-top-navigation/);
+});
+
+test("session shell provides one browser timeline, composer, connection state, and inline sandboxed activities", async () => {
+  const html = await readFile(path.join(ROOT, "public/index.html"), "utf8");
+  const script = await readFile(path.join(ROOT, "public/host-app.js"), "utf8");
+  assert.match(html, /id="tutor-shell"[^>]*hidden/);
+  assert.match(html, /id="timeline"[^>]*aria-live="polite"/);
+  assert.match(html, /id="learner-message"/);
+  assert.match(html, /id="connection"[^>]*role="status"/);
+  assert.match(script, /type === "activity\.inline"/);
+  assert.match(script, /setAttribute\("sandbox", "allow-scripts"\)/);
+  assert.match(script, /type === "activity\.attempt"|post\("activity\.attempt"/);
+  assert.doesNotMatch(script, /api\.openai\.com|OPENAI_API_KEY/);
 });
 
 test("shell and fixture support focus, reduced motion, and non-timed interaction", async () => {

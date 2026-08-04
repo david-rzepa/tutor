@@ -1,6 +1,6 @@
 # Human-driven acceptance test plan
 
-- Plan version: **3.3.2**
+- Plan version: **3.4.0**
 - Product baseline: repository `main` at or after goal #22
 - Decision owner: the human acceptance owner; never the facilitating agent
 
@@ -26,7 +26,7 @@ Automated evidence covers network/origin policy, sandboxing, schemas, event sequ
 | Protocol stop/safety enforcement | Automated prerequisite; no persistent learner-facing host controls |
 | Curriculum explorer render and text summary | Runnable after agent setup |
 | Unified onboarding-to-lesson application | Unavailable; critical journey coverage remains blocked |
-| Agent-led browser conversation with inline activity history | Unavailable |
+| Agent-led browser conversation with inline activity history | Runnable on Windows after agent setup |
 | Real learner/deployment feedback flows | Prohibited pending deployment-specific authority |
 | macOS/Linux experience | Unobserved |
 
@@ -37,8 +37,8 @@ Supported test browsers are current Chromium or Edge on Windows. Other browsers 
 1. Use the exact product checkpoint on `main`; record only non-identifying environment facts.
 2. Run every automated prerequisite without delegating it to the human.
 3. Create a disposable `tutor.workspace/v1` manifest with an opaque `workspace_id` and `test_only: true`.
-4. Build the fixtures and start `node src/interactive-assistant-harness/server.js 41739` on its printed loopback URL.
-5. Initialize the checkpoint with plan version `3.3.2`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow, age-11 language criteria, visible shell contract, learner-map actions, verified reduced-motion setup, and subject visual contract changed acceptance meaning.
+4. Build the fixtures and verify `node src/interactive-assistant-harness/server.js 41739` on its printed loopback URL. For `scn_browser_session`, use the tutor skill's private temporary activity root plus `server-cli.js`/`session-cli.js` setup instead of exposing its capabilities or commands to the human.
+5. Initialize the checkpoint with plan version `3.4.0`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the browser-native Codex conversation and inline-activity journey adds new human actions, expectations, recovery behavior, and release coverage.
 6. Reset by reloading a fresh fixture or rebuilding an in-memory explorer model. Stop the server normally. Delete checkpoint or workspace state only with the plan's exact confirmation boundaries.
 
 ## Feedback workflow
@@ -66,6 +66,7 @@ Evidence references may name privacy-safe local artifacts such as `screens/first
 | `scn_interaction` | affordances, feedback, help, pointer/keyboard parity | runnable |
 | `scn_access` | keyboard-only and reduced-motion experience | runnable |
 | `scn_explorer` | visual/non-visual comprehension and orientation | agent setup required |
+| `scn_browser_session` | one-window conversation, inline activity history, and connection recovery | agent setup required |
 
 ## Scenario cards
 
@@ -111,9 +112,22 @@ Setup: the facilitator renders one synthetic curriculum explorer and equivalent 
 
 Pass when visual and non-visual experiences communicate equivalent meaning, preserve orientation, and present progress truthfully.
 
+### `scn_browser_session` — browser-native Codex tutoring journey
+
+Setup: the facilitator creates a fresh synthetic, memory-only session through the loopback harness, keeps the active Codex listener running, and opens the generated learner URL once. The learner is not shown or asked to handle capabilities, commands, logs, source packets, or generated files. Use an arbitrary subject that is not a checked-in fixture, such as cooking, and approved authoritative sources. Reset: end the session, stop the server normally, and discard only the exact temporary generated-activity directory. Default failure severity: major; cross-session disclosure, browser credential exposure, a stop failure, or an activity shown before validation is blocking.
+
+1. `act_request`: In the browser chat, ask to learn the chosen arbitrary subject. Expected: waiting/connection feedback is understandable, Codex responds in the browser without asking the learner to visit the Codex UI, and the response is concise, learner-facing, and grounded with a useful source link when the source materially supports the lesson.
+2. `act_inline`: Continue until Codex offers the first generated activity, then use it. Expected: the activity appears inline in the chronological chat, is clearly connected to the conversation, remains sandboxed and fully operable, and its help, feedback, and completion states work without navigating away.
+3. `act_continue`: Ask one natural follow-up question in browser chat and complete or attempt the next activity. Expected: Codex receives both chat and structured activity events, answers the question briefly, adapts from observed evidence without claiming mastery from one success, and adds the response and any new activity after the prior history.
+4. `act_history`: Review the full page after at least two tutor responses and two activities. Expected: learner messages, tutor replies, source context, activities, results, and completion states form one understandable session history; earlier activities remain readable and no technical protocol, capability, curriculum ID, or developer control is visible.
+5. `act_reconnect`: With the facilitator safely pausing and then restoring the Codex listener, observe the browser status without submitting private content. Expected: the browser plainly reports that it is waiting or disconnected, does not fabricate a response or lose existing history, and resumes in order without duplicate messages after the listener returns.
+6. `act_end`: Use `End session`. Expected: the session ends promptly and unmistakably, further input is unavailable, existing history remains visible for the current page, and no raw chat is silently saved.
+
+Pass when a learner can request an arbitrary grounded lesson, converse with Codex, use generated activities, recover orientation, and end the session while remaining in one understandable browser journey.
+
 ## Unavailable journey coverage
 
-Do not simulate unavailable product journeys with module tests or command output. Report unified onboarding-to-lesson, conversational browser orchestration with inline activity history, deployment feedback, and untested platforms as unaccepted limitations. Automated component coverage does not make these journeys runnable.
+Do not simulate unavailable product journeys with module tests or command output. Report unified non-agent onboarding, deployment feedback, and untested platforms as unaccepted limitations. The browser-native Codex journey is runnable only after facilitator setup; automated component coverage and agent inspection do not replace its human verdict.
 
 ## Release-readiness summary
 

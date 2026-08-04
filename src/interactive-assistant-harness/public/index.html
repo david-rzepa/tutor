@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <main aria-label="Learning activity">
+    <main id="activity-shell" aria-label="Learning activity">
       <p id="status" class="sr-only" role="status" aria-live="polite">Loading activity.</p>
       <iframe
         id="assistant"
@@ -15,6 +15,24 @@
         sandbox="allow-scripts"
         referrerpolicy="no-referrer"
       ></iframe>
+    </main>
+    <main id="tutor-shell" aria-label="Tutor conversation" hidden>
+      <header class="session-header">
+        <div>
+          <p class="eyebrow">Your learning session</p>
+          <h1>Tutor</h1>
+        </div>
+        <p id="connection" class="connection" role="status">Connecting to your tutor…</p>
+      </header>
+      <ol id="timeline" class="timeline" aria-label="Session history" aria-live="polite"></ol>
+      <form id="chat-form" class="composer">
+        <label for="learner-message">What would you like to learn?</label>
+        <div class="composer-row">
+          <textarea id="learner-message" rows="2" maxlength="4000" required></textarea>
+          <button id="send-message" type="submit">Send</button>
+        </div>
+      </form>
+      <button id="stop-session" class="stop-session" type="button">End session</button>
     </main>
     <script type="module" src="/host-app.js"></script>
   </body>

@@ -32,12 +32,22 @@ async function publishJson(outputRoot, activityId, config, metadata = {}) {
 }
 
 export async function buildConfiguredActivity({ sourcePath, outputRoot = DEFAULT_OUTPUT_ROOT, fallbackPath = FALLBACK_PATH }) {
+  let source;
+  try { source = JSON.parse(await readFile(sourcePath, "utf8")); }
+  catch (error) {
+    if (!(error instanceof SyntaxError)) throw error;
+    source = null;
+  }
+  return buildActivityConfig({ config: source, outputRoot, fallbackPath });
+}
+
+export async function buildActivityConfig({ config: source, outputRoot = DEFAULT_OUTPUT_ROOT, fallbackPath = FALLBACK_PATH }) {
   const started = performance.now();
   let config;
   let fallback = false;
   let validationErrors = [];
   try {
-    config = validateActivityConfig(JSON.parse(await readFile(sourcePath, "utf8")));
+    config = validateActivityConfig(source);
   } catch (error) {
     if (!(error instanceof ActivityValidationError || error instanceof SyntaxError)) throw error;
     fallback = true;

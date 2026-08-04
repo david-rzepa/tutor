@@ -22,8 +22,9 @@ This is the context-efficient traceability index from approved design to canonic
 | accessible DAG/progress explorer | [#19](https://github.com/david-rzepa/tutor/issues/19) | #15, #18 | equivalent visual/non-visual interaction tests |
 | tutor agent skill and orchestration policy | [#20](https://github.com/david-rzepa/tutor/issues/20) | #4, #15, #17, #18 | end-to-end synthetic teaching traces |
 | pedagogical generated-activity validation | [#21](https://github.com/david-rzepa/tutor/issues/21) | #4, #12 | adversarial cross-domain validation fixtures |
+| browser-native Codex session, grounded on-demand generation, and inline activity history | [#34](https://github.com/david-rzepa/tutor/issues/34) | #4, #18, #20, #21 | capability bridge, grounded planner, browser timeline, CLI/E2E and human acceptance |
 
-Every design handoff is covered by one row. #5 owns evaluation/feedback/public-issue generation; #14 owns the prerequisite authority contract, avoiding a duplicate efficacy goal. #8 owns structural construction budgets; #21 adds pedagogical/content validation rather than rebuilding the sandbox.
+Every design handoff is covered by one row. #5 owns evaluation/feedback/public-issue generation; #14 owns the prerequisite authority contract, avoiding a duplicate efficacy goal. #8 owns structural construction budgets; #21 adds pedagogical/content validation rather than rebuilding the sandbox. #34 composes the completed curriculum, orchestration, validation, and host components into the learner-facing browser loop.
 
 ## Execution topology
 
@@ -38,9 +39,11 @@ Every design handoff is covered by one row. #5 owns evaluation/feedback/public-i
       └─────────> #17 profiles
 
 #14 reviewed decisions ─> resolve/narrow #5 B-001 ─> #5 efficacy loop
+
+#4 host + #18 curricula + #20 tutor + #21 validation ─> #34 browser-native session
 ```
 
-The durable-learning critical path is **#12/#14 → #17 → #18 → #20**, with #13 required before profiles persist. #12, #13, and #14 can begin in parallel. #21 can proceed after #12 independently of learner data. #16 and #19 are parallelizable after their prerequisites. #5 may continue synthetic design work but real transcript collection/retention remains forbidden until B-001 is resolved through #14 and explicit human authority.
+The durable-learning critical path is **#12/#14 → #17 → #18 → #20 → #34**, with #13 required before profiles persist. #12, #13, and #14 can begin in parallel. #21 can proceed after #12 independently of learner data. #16 and #19 are parallelizable after their prerequisites. #5 may continue synthetic design work but real transcript collection/retention remains forbidden until B-001 is resolved through #14 and explicit human authority.
 
 ## Portfolio invariants
 

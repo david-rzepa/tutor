@@ -4,9 +4,9 @@ import http from "node:http";
 import { listenHarness } from "../server.js";
 
 async function withServer(run) {
-  const { server, url } = await listenHarness();
-  try { await run({ server, url }); }
-  finally { await new Promise((resolve) => server.close(resolve)); }
+  const harness = await listenHarness();
+  try { await run(harness); }
+  finally { await new Promise((resolve) => harness.server.close(resolve)); }
 }
 
 test("serves the host and assistant with restrictive, distinct policies", async () => withServer(async ({ url }) => {
@@ -45,6 +45,32 @@ test("rejects traversal, non-loopback hosts, writes, and unknown files", async (
     request.on("error", reject); request.end();
   });
   assert.equal(status, 421);
+}));
+
+test("exposes an authenticated loopback bridge with separate learner and Codex capabilities", async () => withServer(async ({ url, bootstrapToken }) => {
+  const denied = await fetch(`${url}/api/sessions`, { method: "POST" });
+  assert.equal(denied.status, 403);
+
+  const createdResponse = await fetch(`${url}/api/sessions`, { method: "POST", headers: { Authorization: `Bearer ${bootstrapToken}` } });
+  assert.equal(createdResponse.status, 201);
+  const created = await createdResponse.json();
+  const path = `${url}/api/sessions/${created.session_id}`;
+
+  const heartbeat = await fetch(`${path}/heartbeat`, { method: "POST", headers: { Authorization: `Bearer ${created.agent_token}` } });
+  assert.equal(heartbeat.status, 200);
+  const learnerPost = await fetch(`${path}/events`, {
+    method: "POST", headers: { Authorization: `Bearer ${created.learner_token}`, "X-Tutor-Role": "learner", "Content-Type": "application/json" },
+    body: JSON.stringify({ message_id: "learner-http-one", type: "learner.message", payload: { text: "Teach me cooking" } })
+  });
+  assert.equal(learnerPost.status, 201);
+
+  const agentRead = await fetch(`${path}/events?after=0&wait=10`, { headers: { Authorization: `Bearer ${created.agent_token}`, "X-Tutor-Role": "agent" } });
+  assert.equal(agentRead.status, 200);
+  assert.equal((await agentRead.json()).events[0].payload.text, "Teach me cooking");
+
+  const crossed = await fetch(`${path}/events`, { headers: { Authorization: `Bearer ${created.learner_token}`, "X-Tutor-Role": "agent" } });
+  assert.equal(crossed.status, 403);
+  assert.equal((await fetch(`${path}/status`, { headers: { Authorization: `Bearer ${created.learner_token}` } })).status, 200);
 }));
 
 test("all shell assets needed after load are local and available offline", async () => withServer(async ({ url }) => {

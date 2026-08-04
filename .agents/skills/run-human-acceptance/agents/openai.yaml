@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Human Acceptance"
+  short_description: "Lead a human-owned tutor acceptance run"
+  default_prompt: "Use $run-human-acceptance to guide me through the tutor acceptance plan one action at a time."

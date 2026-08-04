@@ -1,6 +1,6 @@
 # Human-driven acceptance test plan
 
-- Plan version: **1.0.0**
+- Plan version: **1.1.0**
 - Product baseline: repository `main` at or after goal #22
 - Decision owner: the human acceptance owner; never the facilitating agent
 
@@ -17,7 +17,7 @@ The facilitator presents one action without its expected result, records the tes
 | Local sandboxed host, three tiny assistants, pause/stop/access controls | Runnable now on Windows |
 | Synthetic profile, authority, curriculum, orchestrator, repository, and lifecycle modules | Runnable now with command assistance |
 | Unified non-developer onboarding-to-lesson application | Unavailable; record affected journey as blocked |
-| Visual/non-visual curriculum explorer (#19) | Gated until #19 is done |
+| Visual/non-visual curriculum explorer (#19) | Runnable now with command assistance |
 | Real learner feedback, transcript collection, aggregate disclosure, public issues (#5) | Prohibited pending deployment-specific H-001–H-008 authority |
 | macOS/Linux product run | Unobserved; fixtures/tests are portable claims, not human acceptance |
 
@@ -29,7 +29,7 @@ Supported test browsers are current Chromium or Edge on Windows. Record other br
 2. Confirm Node.js 22 or newer and run `npm test`. A failure blocks product scenarios but is not itself a human acceptance verdict.
 3. Create a disposable directory containing `workspace.json` with opaque `workspace_id` and `test_only: true`. Never point lifecycle/deletion actions at the repository or a real workspace.
 4. Build the fixtures with the three commands in `examples/interactive-assistants/README.md`, then run `node src/interactive-assistant-harness/server.js 41739`. Use the printed loopback URL.
-5. Initialize the facilitator checkpoint outside the repository with the plan file, version `1.0.0`, product commit, disposable `workspace.json`, opaque run ID, and `--synthetic-confirmed`. The helper rejects a workspace not explicitly marked `test_only` and records no path.
+5. Initialize the facilitator checkpoint outside the repository with the plan file, version `1.1.0`, product commit, disposable `workspace.json`, opaque run ID, and `--synthetic-confirmed`. The helper rejects a workspace not explicitly marked `test_only` and records no path.
 6. Before every scenario, reset only its synthetic records or rebuild the disposable fixture. Stop the loopback server normally. Lifecycle deletion is allowed only after its exact preview is reviewed and only for the disposable root. The checkpoint helper deletes only its own file after exact run-ID confirmation.
 
 ## Synthetic personas
@@ -144,7 +144,14 @@ Pass when interruption is resumable, tampering fails closed, exports preserve is
 
 ### `scn_explorer` — curriculum DAG and equivalent progress views
 
-Status: gated by #19. Record one `unavailable` observation before expectation reveal, then human-assign `blocked` or `skipped`; do not simulate a pass. Expected after observation: visual and non-visual views expose the same immutable graph version, prerequisites, readiness explanation, progress, and keyboard/screen-reader actions without encoding graph position by color alone. Default blocked severity: major coverage debt.
+Setup: build a synthetic explorer model from one validated curriculum, immutable graph, projection, and readiness result; render its portfolio document and text summary. Reset: discard the in-memory model and rendered synthetic artifact. Default severity: major; cross-user/version leakage or false mastery is blocking.
+
+1. `act_views`: Compare the map, state-grouped outline, and text/print summary. Expected: every node, prerequisite alternative, state, uncertainty explanation, graph version, and bounded route has equivalent non-color meaning in each view.
+2. `act_navigate`: Use native keyboard controls and switch among three synthetic curricula, then refresh the selected projection. Expected: subject/version tabs are semantic, focus stays on the same node when it still exists, updates are announced, and reflow/reduced-motion modes lose no operation.
+3. `act_truth`: Inspect a retained node, a provisional/learning node, a blocked node, and contradictory evidence. Expected: only retained/transfer evidence receives precisely named recognition; time, clicks, flow, and one-session success never become mastery.
+4. `act_control`: Request a correction, choose a ready node, and stop. Expected: each produces a graph-version-bound host intent; no action starts a session automatically, a blocked node cannot be chosen, and stop/change-goal remain visible.
+
+Pass when visual and non-visual meaning/operations are equivalent, multiple curricula and graph revisions preserve orientation, progress stays truthful, and the output contains neither learner identity nor raw evidence. Capture a sanitized semantic-output summary and keyboard/focus observation; do not capture record bodies.
 
 ### `scn_external` — feedback and public-write boundary
 
@@ -158,4 +165,4 @@ The facilitator produces counts by verdict, blocking failures, blocking coverage
 - `conditional`: named non-blocking conditions remain;
 - `no-go`: a blocking failure, unacceptable major failure, or critical unknown prevents acceptance.
 
-The summary must say that macOS/Linux, unified product onboarding, #19 explorer behavior, and #5 deployment feedback are unaccepted whenever they were not directly observed. No agent-generated summary is final until the human approves or corrects it.
+The summary must say that macOS/Linux, unified product onboarding, #5 deployment feedback, and any runnable scenario the human skipped are unaccepted whenever they were not directly observed. No agent-generated summary is final until the human approves or corrects it.

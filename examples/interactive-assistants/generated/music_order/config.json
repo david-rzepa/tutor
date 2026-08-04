@@ -3,10 +3,10 @@
   "activity_id": "music_order",
   "objective": {
     "id": "order_note_values",
-    "label": "Order three note values"
+    "label": "Put the note lengths in order"
   },
   "mechanic": "sequence",
-  "prompt": "Choose the durations from shortest to longest.",
+  "prompt": "Which order goes from the shortest note to the longest?",
   "items": [
     {
       "id": "half",
@@ -35,7 +35,7 @@
     "after_errors": 1
   },
   "presentation": {
-    "audience": "general",
+    "learner_persona": "age-11",
     "accessible_alternative": "keyboard-operable labeled buttons; no audio required for this duration objective"
   },
   "limits": {

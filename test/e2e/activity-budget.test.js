@@ -17,6 +17,8 @@ test("cross-domain configurations fit the first-generation activity budget", asy
     assert.ok(config.items.length <= ACTIVITY_BUDGET.maxItems);
     assert.ok(config.limits.ui_states <= ACTIVITY_BUDGET.maxUiStates);
     assert.ok(config.limits.max_agent_callbacks <= ACTIVITY_BUDGET.maxAgentCallbacks);
+    assert.equal(config.presentation.learner_persona, "age-11");
+    assert.match(config.prompt, /\?/);
   }
 });
 
@@ -44,6 +46,7 @@ test("invalid configuration cannot smuggle code, media, excessive states, or ove
     { ...base, answer: "missing_item" },
     { ...base, items: [base.items[0], base.items[0]] },
     { ...base, limits: { ...base.limits, ui_states: ACTIVITY_BUDGET.maxUiStates + 1 } },
+    { ...base, presentation: { ...base.presentation, learner_persona: "unspecified" } },
     { ...base, prompt: "x".repeat(241) }
   ]) {
     assert.throws(() => validateActivityConfig(mutation), (error) => error instanceof ActivityValidationError);

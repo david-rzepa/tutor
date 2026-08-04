@@ -10,6 +10,7 @@ export const ACTIVITY_BUDGET = Object.freeze({
 });
 
 export const MECHANICS = new Set(["choice", "sequence", "recall"]);
+export const LEARNER_PERSONAS = new Set(["age-11", "adult", "caregiver-mediated"]);
 const TOP_LEVEL_FIELDS = new Set([
   "schema", "activity_id", "objective", "mechanic", "prompt", "items", "answer",
   "feedback", "scaffold", "presentation", "limits", "curriculum_ref"
@@ -75,6 +76,7 @@ export function validateActivityConfig(config) {
   if (config.mechanic === "recall" && (!Array.isArray(config.answer) || !config.answer.length || config.answer.length > ACTIVITY_BUDGET.maxItems || config.answer.some((answer) => typeof answer !== "string" || !answer.trim() || answer.length > 120))) errors.push("recall answer must be a bounded non-empty string list");
   if (!isRecord(config.feedback) || [config.feedback?.correct, config.feedback?.retry].some((text) => typeof text !== "string" || !text.trim() || text.length > 240)) errors.push("bounded correct/retry feedback is required");
   if (!isRecord(config.scaffold) || typeof config.scaffold.hint !== "string" || !config.scaffold.hint.trim() || config.scaffold.hint.length > 240 || !Number.isInteger(config.scaffold.after_errors) || config.scaffold.after_errors < 1 || config.scaffold.after_errors > 3) errors.push("scaffold requires a bounded hint and after_errors from 1–3");
+  if (!isRecord(config.presentation) || !LEARNER_PERSONAS.has(config.presentation.learner_persona)) errors.push("presentation requires a supported learner_persona");
   if (!isRecord(config.limits) || !Number.isInteger(config.limits.max_attempts) || config.limits.max_attempts < 1 || config.limits.max_attempts > 8) errors.push("max_attempts must be 1–8");
   if (config.limits?.max_agent_callbacks > ACTIVITY_BUDGET.maxAgentCallbacks) errors.push("agent callback budget exceeded");
   if (config.limits?.ui_states > ACTIVITY_BUDGET.maxUiStates) errors.push("UI state budget exceeded");
@@ -88,6 +90,7 @@ export function validateGeneratedApp({ manifest, files }) {
   if (!isRecord(manifest) || manifest.schema !== "tutor.generated-activity/v1") errors.push("unsupported generated-app manifest");
   if (!safeId(manifest?.activity_id)) errors.push("activity_id is unsafe");
   if (!isRecord(manifest?.objective) || !safeId(manifest?.objective?.id)) errors.push("objective requires a safe ID");
+  if (!isRecord(manifest?.presentation) || !LEARNER_PERSONAS.has(manifest.presentation.learner_persona)) errors.push("presentation requires a supported learner_persona");
   if (!isRecord(manifest?.session_config) || bytes(JSON.stringify(manifest.session_config ?? {})) > ACTIVITY_BUDGET.maxConfigBytes) errors.push("session configuration is missing or over budget");
   if (containsForbiddenProfileKey(manifest?.session_config)) errors.push("session configuration contains private profile or transcript data");
   if (!isRecord(manifest?.limits) || manifest.limits.ui_states > ACTIVITY_BUDGET.maxUiStates || manifest.limits.max_agent_callbacks > ACTIVITY_BUDGET.maxAgentCallbacks) errors.push("generated app exceeds state/callback budget");

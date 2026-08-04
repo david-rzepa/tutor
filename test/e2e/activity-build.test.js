@@ -15,6 +15,9 @@ test("configuration and generated-code paths build inside the interactive budget
     assert.equal(generated.manifest.mode, "generated-app");
     assert.equal(configured.fallback, false);
     assert.equal(generated.fallback, false);
+    assert.equal(configured.manifest.presentation.learner_persona, "age-11");
+    assert.equal(generated.manifest.presentation.learner_persona, "adult");
+    assert.match(generated.manifest.session_config.prompt, /\?/);
     assert.ok(configured.buildMilliseconds <= ACTIVITY_BUDGET.targetBuildMilliseconds);
     assert.ok(generated.buildMilliseconds <= ACTIVITY_BUDGET.targetBuildMilliseconds);
     assert.ok(generated.totalBytes <= ACTIVITY_BUDGET.maxGeneratedAppBytes);

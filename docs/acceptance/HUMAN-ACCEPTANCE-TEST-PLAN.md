@@ -1,6 +1,6 @@
 # Human-driven acceptance test plan
 
-- Plan version: **1.1.0**
+- Plan version: **1.2.0**
 - Product baseline: repository `main` at or after goal #22
 - Decision owner: the human acceptance owner; never the facilitating agent
 
@@ -29,7 +29,7 @@ Supported test browsers are current Chromium or Edge on Windows. Record other br
 2. Confirm Node.js 22 or newer and run `npm test`. A failure blocks product scenarios but is not itself a human acceptance verdict.
 3. Create a disposable directory containing `workspace.json` with opaque `workspace_id` and `test_only: true`. Never point lifecycle/deletion actions at the repository or a real workspace.
 4. Build the fixtures with the three commands in `examples/interactive-assistants/README.md`, then run `node src/interactive-assistant-harness/server.js 41739`. Use the printed loopback URL.
-5. Initialize the facilitator checkpoint outside the repository with the plan file, version `1.1.0`, product commit, disposable `workspace.json`, opaque run ID, and `--synthetic-confirmed`. The helper rejects a workspace not explicitly marked `test_only` and records no path.
+5. Initialize the facilitator checkpoint outside the repository with the plan file, version `1.2.0`, product commit, disposable `workspace.json`, opaque run ID, and `--synthetic-confirmed`. The helper rejects a workspace not explicitly marked `test_only` and records no path. Older checkpoints fail closed because the age-11 language criterion changes acceptance meaning.
 6. Before every scenario, reset only its synthetic records or rebuild the disposable fixture. Stop the loopback server normally. Lifecycle deletion is allowed only after its exact preview is reviewed and only for the disposable root. The checkpoint helper deletes only its own file after exact run-ID confirmation.
 
 ## Synthetic personas
@@ -72,11 +72,11 @@ Evidence references name local artifacts only, such as `screens/teach_success.pn
 
 Setup: server running; fixture URLs for `adult_math_recall`, `science_change`, and `music_order`. Reset: reload a fresh fixture URL. Default failure severity: major; sandbox/network escape is blocking.
 
-1. `act_launch`: Open each fixture. Expected after observation: one small, subject-distinct activity loads without remote assets, sign-in, profile/path disclosure, or full-game setup. Inspect: browser network shows loopback/local assets only.
+1. `act_launch`: Open each fixture. Expected after observation: one small, subject-distinct activity loads without remote assets, sign-in, profile/path disclosure, or full-game setup. The science and music fixtures use the explicit age-11 persona and present a direct question with an obvious response; the math fixture demonstrates an explicit adult alternative. No wording implies ability, diagnosis, or learning style. Inspect: browser network shows loopback/local assets only and the built fixture records its learner persona.
 2. `act_operate`: Complete one item using pointer, then keyboard. Expected: focus is visible, status/feedback is perceivable, and the same target operation is possible without timing pressure.
 3. `act_help`: Request help and retry. Expected: one bounded scaffold appears without revealing a full answer history or leaving the single activity surface.
 
-Pass when all three subjects launch, the activity remains tiny and understandable, required controls work, and no remote/identity capability appears. Inspect the structured ready/attempt/help/complete events for session and sequence validity without identity. Capture at most one sanitized screenshot per subject, an event-schema summary, and a network-origin summary.
+Pass when all three subjects launch, the activity remains tiny and understandable for its declared persona, the question and response action are immediately clear, required controls work, and no remote/identity capability appears. Inspect the structured ready/attempt/help/complete events for session and sequence validity without identity. Capture at most one sanitized screenshot per subject, an event-schema summary, and a network-origin summary.
 
 ### `scn_onboard` — authority, profile, curriculum, and correction
 

@@ -4,11 +4,15 @@
   "mode": "template-config",
   "entry": "/examples/template/index.html",
   "config": "config.json",
+  "presentation": {
+    "learner_persona": "age-11",
+    "accessible_alternative": "keyboard-operable labeled buttons; no audio required for this duration objective"
+  },
   "files": [
     {
       "path": "config.json",
-      "bytes": 1189,
-      "sha256": "2a9b41ad09e0807011ea51cfe673aac9d21e950ca3759760db7f119a659fbc53"
+      "bytes": 1210,
+      "sha256": "30db4988f62c275bd2f950d89afcee89ea355a7b5a291df5d925d7de4ba439e9"
     }
   ],
   "budget": {

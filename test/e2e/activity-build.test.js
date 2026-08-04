@@ -40,6 +40,21 @@ test("template and generated paths provide an explicit terminal presentation", a
   }
 });
 
+test("template and generated paths expose one bounded learner help action", async () => {
+  const paths = [
+    ["examples/interactive-assistants/template/index.html", "examples/interactive-assistants/template/card.js"],
+    ["examples/interactive-assistants/sources/adult-math-app/index.html", "examples/interactive-assistants/sources/adult-math-app/app.js"]
+  ];
+  for (const [htmlPath, scriptPath] of paths) {
+    const html = await readFile(path.resolve(htmlPath), "utf8");
+    const script = await readFile(path.resolve(scriptPath), "utf8");
+    assert.match(html, /id="help"[^>]*>Help</);
+    assert.match(html, /id="hint" hidden/);
+    assert.match(script, /send\("help\.requested"/);
+    assert.match(script, /help\.remove\(\)/);
+  }
+});
+
 test("unsafe generated code falls back deterministically to a reviewed card", async () => {
   const base = await mkdtemp(path.join(os.tmpdir(), "tutor-unsafe-app-"));
   const source = path.join(base, "source");

@@ -9,6 +9,7 @@
   "session_config": {
     "objective_id": "estimate_tip",
     "prompt": "What is 10% of 48? Try it without a calculator.",
+    "hint": "Ten percent means one tenth. Try dividing 48 by 10.",
     "accepted_answers": [
       "4.8",
       "about 5",
@@ -19,18 +20,18 @@
   "files": [
     {
       "path": "app/app.js",
-      "bytes": 2284,
-      "sha256": "5d0f570c384fbda129d8b7be930d8e850d082fc738c46debd23a28f50460b472"
+      "bytes": 2907,
+      "sha256": "6d1901be857953f70f773a2ae5a6c573ac744fee6f021f5991856a121642f200"
     },
     {
       "path": "app/index.html",
-      "bytes": 741,
-      "sha256": "9531ff0009371cf72245c3a5bbe3d9af507e6bd1b9eca57d744dc409c3c988b1"
+      "bytes": 878,
+      "sha256": "2247f0ca5dca7a72bd2e9d87bf91aa6e356e32d94330221f11779869e2a60f7a"
     },
     {
       "path": "app/style.css",
-      "bytes": 607,
-      "sha256": "c17c14bbed70b4ef7f3968e831e0850e5cb7e584451404ea25b0a245e8298357"
+      "bytes": 736,
+      "sha256": "a2fa57e2a9a8d0a734b69e5b767059ad14404305bda445962d5978a649cddbfa"
     }
   ],
   "budget": {

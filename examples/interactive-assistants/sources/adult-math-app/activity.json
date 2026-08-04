@@ -8,6 +8,7 @@
   "session_config": {
     "objective_id": "estimate_tip",
     "prompt": "What is 10% of 48? Try it without a calculator.",
+    "hint": "Ten percent means one tenth. Try dividing 48 by 10.",
     "accepted_answers": ["4.8", "about 5", "5"],
     "privacy": "learning_record"
   }

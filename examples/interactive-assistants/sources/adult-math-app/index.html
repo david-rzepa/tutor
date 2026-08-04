@@ -9,7 +9,9 @@
   <body>
     <main>
       <h2 id="prompt">Waiting for the estimate…</h2>
-      <section aria-labelledby="prompt"><label>Your estimate <input required autocomplete="off"></label><button type="button">Check</button></section>
+      <section id="response" aria-labelledby="prompt"><label>Your estimate <input required autocomplete="off"></label><button id="check" type="button">Check</button></section>
+      <p id="hint" hidden></p>
+      <div id="help-actions"><button id="help" type="button">Help</button></div>
       <p role="status" aria-live="polite"></p>
       <section id="completion" tabindex="-1" hidden>
         <h2>Activity complete</h2>

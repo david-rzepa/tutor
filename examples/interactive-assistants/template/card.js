@@ -6,11 +6,14 @@ const objective = document.querySelector("#objective");
 const prompt = document.querySelector("#prompt");
 const hint = document.querySelector("#hint");
 const interaction = document.querySelector("#interaction");
+const helpActions = document.querySelector("#help-actions");
+const help = document.querySelector("#help");
 const feedback = document.querySelector("#feedback");
 const completion = document.querySelector("#completion");
 let sequence = 0;
 let state;
 let pendingAdaptation;
+let helpUsed = false;
 
 function send(type, payload, causedBy = null, privacy = "ephemeral") {
   const messageId = `assistant-${crypto.randomUUID()}`;
@@ -34,6 +37,7 @@ function record(response) {
   if (result.adaptation) pendingAdaptation = send("adaptation.requested", result.adaptation);
   if (state.complete) {
     interaction.replaceChildren();
+    helpActions.replaceChildren();
     hint.hidden = true;
     completion.hidden = false;
     completion.focus();
@@ -80,22 +84,33 @@ function initialize(config) {
   if (config.mechanic === "recall") renderRecall();
 }
 
+help.addEventListener("click", () => {
+  if (!state || state.complete || helpUsed) return;
+  helpUsed = true;
+  hint.hidden = false;
+  help.remove();
+  send("help.requested", { objective_id: state.config.objective.id, scaffold: "hint", help_count: 1 }, null, "learning_record");
+  feedback.textContent = "Here is one hint. You can try the question now.";
+  interaction.querySelector("button,input")?.focus();
+});
+
 addEventListener("message", (event) => {
   if (event.source !== parent || event.origin === "null") return;
   const message = event.data;
   if (message?.protocol !== "tutor.assistant/v1" || message.session_id !== sessionId) return;
   if (message.type === "session.initialize") {
     initialize(message.payload);
-    send("session.ready", { capabilities: ["attempt.recorded", "adaptation.requested"], build_mode: "template-config" }, message.message_id);
+    send("session.ready", { capabilities: ["attempt.recorded", "adaptation.requested", "help.requested"], build_mode: "template-config" }, message.message_id);
   }
   if (message.type === "adaptation.applied" && message.caused_by === pendingAdaptation) {
     state = applyAdaptation(state, message.payload); pendingAdaptation = null;
     hint.hidden = state.scaffold !== "guided";
   }
-  if (message.type === "session.pause") interaction.querySelectorAll("button,input").forEach((control) => { control.disabled = true; });
-  if (message.type === "session.resume") interaction.querySelectorAll("button,input").forEach((control) => { control.disabled = state.complete; });
+  if (message.type === "session.pause") document.querySelectorAll("#interaction button, #interaction input, #help-actions button").forEach((control) => { control.disabled = true; });
+  if (message.type === "session.resume") document.querySelectorAll("#interaction button, #interaction input, #help-actions button").forEach((control) => { control.disabled = state.complete; });
   if (message.type === "session.stop") {
     interaction.replaceChildren();
+    helpActions.replaceChildren();
     completion.querySelector("h2").textContent = "Activity ended";
     completion.querySelector("p").textContent = "You can close this page.";
     completion.hidden = false;

@@ -1,6 +1,6 @@
 # Human-driven acceptance test plan
 
-- Plan version: **3.2.1**
+- Plan version: **3.2.2**
 - Product baseline: repository `main` at or after goal #22
 - Decision owner: the human acceptance owner; never the facilitating agent
 
@@ -38,7 +38,7 @@ Supported test browsers are current Chromium or Edge on Windows. Other browsers 
 2. Run every automated prerequisite without delegating it to the human.
 3. Create a disposable `tutor.workspace/v1` manifest with an opaque `workspace_id` and `test_only: true`.
 4. Build the fixtures and start `node src/interactive-assistant-harness/server.js 41739` on its printed loopback URL.
-5. Initialize the checkpoint with plan version `3.2.1`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow, age-11 language criteria, and visible shell contract changed acceptance meaning.
+5. Initialize the checkpoint with plan version `3.2.2`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow, age-11 language criteria, and visible shell contract changed acceptance meaning.
 6. Reset by reloading a fresh fixture or rebuilding an in-memory explorer model. Stop the server normally. Delete checkpoint or workspace state only with the plan's exact confirmation boundaries.
 
 ## Feedback workflow
@@ -85,7 +85,7 @@ Setup: fresh fixture URL. Reset: reload between attempts. Default failure severi
 
 1. `act_operate`: Complete the same target operation once with the pointer and once using only the keyboard. Expected: actionable elements are discoverable, focus is visible, both routes feel practical, and neither requires timing pressure.
 2. `act_feedback`: Try one incorrect response and then retry. Expected: feedback is immediate, understandable, non-punitive, and makes the next action obvious without disclosing a full answer history.
-3. `act_help`: Find and request help before completing an item. Expected: help is easy to discover, gives one bounded scaffold, and leaves the learner confidently able to retry.
+3. `act_help`: Before answering, use the visible `Help` button once. Expected: one short hint appears, the help action does not repeat, the answer controls remain available, and focus returns to an answer control so retrying is obvious.
 
 Pass when a learner can discover, operate, recover, and request support without developer knowledge or unexplained dead ends.
 

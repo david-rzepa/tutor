@@ -2,6 +2,7 @@
 body { margin: 0; padding: 1.25rem; background: Canvas; color: CanvasText; }
 .eyebrow { font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; }
 #interaction, .choices { display: flex; flex-wrap: wrap; gap: .75rem; }
+#help-actions { margin-block-start: 1rem; }
 button, input { min-height: 2.75rem; padding: .6rem .9rem; font: inherit; }
 button:focus-visible, input:focus-visible { outline: .2rem solid Highlight; outline-offset: .2rem; }
 form { display: flex; flex-wrap: wrap; gap: .75rem; }

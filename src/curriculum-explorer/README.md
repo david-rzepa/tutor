@@ -1,5 +1,5 @@
 # Curriculum explorer
 
-Projection-bound, domain-neutral curriculum exploration with one shared model for a deterministic visual map, semantic outline, printable/text summary, bounded route comparison, stable focus, and host-confirmed actions.
+Projection-bound, domain-neutral curriculum exploration with a learner-facing topic map, plain progress wording, printable/text equivalent, stable focus, and an optional host-confirmed revisit action.
 
-The explorer accepts only exact immutable curriculum/graph/projection/readiness scopes. It emits no learner identity or raw evidence. Choosing a node creates an intent but never starts a session. Celebration is limited to retained or transfer-verified evidence, names that evidence precisely, and never hides stop/change-goal controls.
+The explorer still accepts only exact immutable curriculum/graph/projection/readiness scopes and emits no learner identity or raw evidence. Technical provenance, evidence counts, correction tools, and session controls stay out of the learner view. Revisit creates an intent but never starts a session; retained and transfer evidence use truthful wording rather than mastery claims.

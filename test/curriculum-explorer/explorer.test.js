@@ -18,11 +18,11 @@ function fixture(domain = "science", version = "v1", user = "usr_synthetic", pre
 }
 function event(id, nodeId, curriculumId, graphId, userId, day, item, grade = "observation") { return { schema: "tutor.evidence-event/v1", event_id: id, user_id: userId, curriculum_id: curriculumId, graph_id: graphId, node_id: nodeId, objective_id: `obj_${nodeId}`, item_version: item, rubric_version: "rubric_v1", assistant_version: "assistant_v1", algorithm_version: "evaluator_v1", grade, observation: { correct: true }, support: { scaffold: "none", help_count: 0 }, uncertainty: { confidence: 0.8 }, privacy: { class: "learning_record", purpose: "progress_projection" }, provenance: ["source:synthetic"], observed_at: iso(day) }; }
 
-test("visual map, semantic outline, and text summary share every node and meaning", () => {
+test("learner map and text summary share every topic, progress state, and connection", () => {
   for (const domain of ["science", "music", "mathematics"]) {
     const model = createExplorerModel(fixture(domain)); const html = renderExplorerDocument(model); const text = renderTextSummary(model);
-    for (const node of model.nodes) { assert.ok(html.includes(node.label)); assert.ok(text.includes(node.label)); assert.equal((html.match(new RegExp(`data-node-id="${node.nodeId}"`, "g")) ?? []).length >= 2, true); }
-    assert.match(html, /Equivalent outline/); assert.match(html, /prerequisite → dependent/); assert.match(html, /prefers-reduced-motion/); assert.match(html, /@media print/); assert.match(html, /Stop exploring/); assert.match(text, /Stop and change-goal controls/); assert.match(text, /needed:|satisfied:/);
+    for (const node of model.nodes) { assert.ok(html.includes(node.label)); assert.ok(text.includes(node.label)); assert.ok(html.includes(node.progress.label)); assert.ok(text.includes(node.progress.label)); assert.equal((html.match(new RegExp(`<article[^>]+data-node-id="${node.nodeId}"`, "g")) ?? []).length, 1); }
+    assert.match(html, /Your learning map/); assert.match(html, /Arrows show what comes next/); assert.match(html, /prefers-reduced-motion/); assert.match(html, /@media print/); assert.doesNotMatch(html, /Graph version|projection|structured evidence|Correct an assumption|Stop exploring|Equivalent outline/); assert.match(text, /Builds on|Comes after/);
   }
 });
 
@@ -39,7 +39,7 @@ test("multi-curriculum tabs expose versions without learner identity", () => {
   const items = [fixture("science"), fixture("music"), fixture("mathematics")]; const portfolio = createPortfolioExplorer({ items, selectedCurriculumId: "cur_music", presentation: "compact" });
   assert.equal(portfolio.tabs.length, 3); assert.equal(portfolio.explorer.subject, "Music"); assert.equal(portfolio.explorer.presentation, "compact");
   assert.doesNotMatch(JSON.stringify(portfolio), /usr_synthetic/); assert.deepEqual(portfolio.tabs.map((tab) => tab.graphId), ["grf_science_v1", "grf_music_v1", "grf_mathematics_v1"]);
-  const html = renderPortfolioDocument(portfolio); assert.match(html, /aria-label="Curricula"/); assert.match(html, /aria-current="page"/); for (const item of items) assert.match(html, new RegExp(item.curriculum.subject.label));
+  const html = renderPortfolioDocument(portfolio); assert.match(html, /aria-label="Subjects"/); assert.match(html, /aria-current="page"/); assert.doesNotMatch(html, /grf_/); for (const item of items) assert.match(html, new RegExp(item.curriculum.subject.label));
 });
 
 test("guided and compact presentations preserve operations, routes, and progress meaning", () => {
@@ -57,17 +57,16 @@ test("focus survives projection refresh and falls back deterministically across 
   assert.equal(preserveExplorerFocus(first, revised), revised.focusNodeId); assert.deepEqual(revised.graphParents, ["grf_science_v1"]);
 });
 
-test("intents require host confirmation and never start sessions", () => {
-  const model = createExplorerModel(fixture()); const ready = model.nodes.find((node) => node.operations.choose); const blocked = model.nodes.find((node) => !node.operations.choose);
-  const choose = createExplorerIntent(model, { operation: "choose", nodeId: ready.nodeId }); assert.equal(choose.operation, "request_activity"); assert.equal(choose.starts_session, false); assert.equal(choose.requires_host_confirmation, true);
-  assert.throws(() => createExplorerIntent(model, { operation: "choose", nodeId: blocked.nodeId }), /blocked nodes/);
-  assert.equal(createExplorerIntent(model, { operation: "stop" }).operation, "stop_exploring"); assert.equal(createExplorerIntent(model, { operation: "correct_assumption", nodeId: ready.nodeId }).operation, "request_correction");
+test("the learner-visible revisit intent requires confirmation and never starts a session", () => {
+  const model = createExplorerModel(fixture()); const revisitable = model.nodes.find((node) => node.operations.revisit); const unseen = model.nodes.find((node) => !node.operations.revisit);
+  const revisit = createExplorerIntent(model, { operation: "revisit", nodeId: revisitable.nodeId }); assert.equal(revisit.operation, "request_activity"); assert.equal(revisit.starts_session, false); assert.equal(revisit.requires_host_confirmation, true);
+  assert.throws(() => createExplorerIntent(model, { operation: "revisit", nodeId: unseen.nodeId }), /without prior progress/);
 });
 
 test("only durable evidence receives precise non-coercive recognition", () => {
   const model = createExplorerModel(fixture()); const retained = model.nodes.find((node) => node.progress.state === "retained"); const unseen = model.nodes.find((node) => node.progress.state === "unseen");
   assert.deepEqual(retained.celebration, { label: "Retention demonstrated", basis: "durable_learning_evidence", autoStart: false }); assert.equal(unseen.celebration, null);
-  const html = renderExplorerDocument(model); assert.doesNotMatch(html, /leaderboard|countdown|points for|session started/i); assert.match(html, /not time, clicks, or streaks/); assert.match(html, /Nothing starts automatically/);
+  const html = renderExplorerDocument(model); assert.doesNotMatch(html, /leaderboard|countdown|points for|session started|mastered/i); assert.match(html, /Remembered after a break/);
 });
 
 test("rendering escapes labels while retaining native keyboard controls", () => {
@@ -76,8 +75,8 @@ test("rendering escapes labels while retaining native keyboard controls", () => 
 });
 
 test("browser wiring focuses the stable node and emits only host-bound intents", () => {
-  const model = createExplorerModel(fixture()); const ready = model.nodes.find((node) => node.operations.choose); let listener; let focused = false; const intents = [];
-  const control = { dataset: { operation: "choose", nodeId: ready.nodeId } };
+  const model = createExplorerModel(fixture()); const revisitable = model.nodes.find((node) => node.operations.revisit); let listener; let focused = false; const intents = [];
+  const control = { dataset: { operation: "revisit", nodeId: revisitable.nodeId } };
   const root = { addEventListener: (_name, value) => { listener = value; }, removeEventListener: (_name, value) => { assert.equal(value, listener); }, contains: (value) => value === control, querySelector: () => ({ focus: ({ preventScroll }) => { focused = preventScroll; } }) };
   const dispose = wireExplorer(root, model, (intent) => intents.push(intent)); listener({ target: { closest: () => control } }); dispose();
   assert.equal(focused, true); assert.equal(intents.length, 1); assert.equal(intents[0].operation, "request_activity"); assert.equal(intents[0].starts_session, false);

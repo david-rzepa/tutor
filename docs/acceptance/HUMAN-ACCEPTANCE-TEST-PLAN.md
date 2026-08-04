@@ -1,6 +1,6 @@
 # Human-driven acceptance test plan
 
-- Plan version: **3.2.2**
+- Plan version: **3.3.0**
 - Product baseline: repository `main` at or after goal #22
 - Decision owner: the human acceptance owner; never the facilitating agent
 
@@ -38,7 +38,7 @@ Supported test browsers are current Chromium or Edge on Windows. Other browsers 
 2. Run every automated prerequisite without delegating it to the human.
 3. Create a disposable `tutor.workspace/v1` manifest with an opaque `workspace_id` and `test_only: true`.
 4. Build the fixtures and start `node src/interactive-assistant-harness/server.js 41739` on its printed loopback URL.
-5. Initialize the checkpoint with plan version `3.2.2`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow, age-11 language criteria, and visible shell contract changed acceptance meaning.
+5. Initialize the checkpoint with plan version `3.3.0`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow, age-11 language criteria, visible shell contract, and learner-map actions changed acceptance meaning.
 6. Reset by reloading a fresh fixture or rebuilding an in-memory explorer model. Stop the server normally. Delete checkpoint or workspace state only with the plan's exact confirmation boundaries.
 
 ## Feedback workflow
@@ -102,10 +102,10 @@ Pass when the experience remains understandable and operable without pointer pre
 
 Setup: the facilitator renders one synthetic curriculum explorer and equivalent text summary; the human is never asked to run or inspect commands. Reset: discard the synthetic render. Default failure severity: major; false mastery is blocking.
 
-1. `act_views`: Explore the visual map, grouped outline, and text/print view. Expected: each view communicates the same prerequisites, learning states, uncertainty, and available routes without relying on color alone.
+1. `act_views`: Explore the visual map and text/print view. Expected: each communicates the same topics, connections, route, plain-language progress, and brief uncertainty without technical provenance, evidence counts, or reliance on color alone.
 2. `act_navigate`: Navigate by keyboard, switch synthetic subjects, and refresh once. Expected: labels and focus make location clear, the same node remains oriented when possible, and updates do not feel disorienting.
 3. `act_truth`: Compare retained, learning, blocked, and contradictory-evidence examples. Expected: wording feels honest and understandable; time, clicks, or one success are never presented as mastery.
-4. `act_control`: Request a correction, choose an available node, and stop. Expected: available actions are obvious, blocked choices explain themselves, and nothing starts unexpectedly.
+4. `act_control`: On a topic with prior progress, use `Revisit topic`. Expected: it is the only per-topic action, asks for confirmation before opening an activity, and nothing starts unexpectedly.
 
 Pass when visual and non-visual experiences communicate equivalent meaning, preserve orientation, and present progress truthfully.
 

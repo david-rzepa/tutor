@@ -8,8 +8,8 @@ Show a calm goal-directed map centered on:
 - two to five ready/review-due choices;
 - just enough prerequisites/dependents to explain why;
 - distinct states for learning, provisional, retained, transfer-verified, blocked, optional, and needs-review;
-- an evidence/uncertainty explanation on demand;
-- visible pause/archive/change-goal controls.
+- brief, plain-language uncertainty when progress needs another check;
+- at most one contextual `Revisit topic` action on a node with prior progress.
 
 Large graphs use semantic zoom, filtering, and progressive disclosure; they do not render an intimidating wall of hundreds of nodes by default.
 
@@ -23,16 +23,12 @@ The complete operation is available as a keyboard/switch-operable outline/table:
 
 ```text
 Subject goal
-  Ready now (3)
-    Predict a simple change — prerequisites retained — choose activity
-    Review proportional comparison — retention due — choose review
-  Learning (1)
-    Trace relationships — provisional evidence 2 days ago
-  Upcoming
-    Explain feedback systems — needs: trace relationships retained
+  Predict a simple change — Remembered after a break — Revisit topic
+  Trace relationships — Learning
+  Explain feedback systems — Not started — Comes after trace relationships
 ```
 
-Screen-reader users can navigate by state, prerequisite, goal path, or subject. Focus never jumps after projection refresh; updates use concise live status. A non-screen summary can be spoken, printed, or used with a teacher/caregiver.
+Screen-reader users can navigate the same topic and prerequisite order as the visual map. Focus never jumps after projection refresh; updates use concise live status. A text summary can be spoken, printed, or used with a teacher/caregiver.
 
 ## Healthy gamification
 

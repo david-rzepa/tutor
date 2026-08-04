@@ -1,6 +1,6 @@
 # Human-driven acceptance test plan
 
-- Plan version: **3.2.0**
+- Plan version: **3.2.1**
 - Product baseline: repository `main` at or after goal #22
 - Decision owner: the human acceptance owner; never the facilitating agent
 
@@ -38,7 +38,7 @@ Supported test browsers are current Chromium or Edge on Windows. Other browsers 
 2. Run every automated prerequisite without delegating it to the human.
 3. Create a disposable `tutor.workspace/v1` manifest with an opaque `workspace_id` and `test_only: true`.
 4. Build the fixtures and start `node src/interactive-assistant-harness/server.js 41739` on its printed loopback URL.
-5. Initialize the checkpoint with plan version `3.2.0`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow, age-11 language criteria, and visible shell contract changed acceptance meaning.
+5. Initialize the checkpoint with plan version `3.2.1`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow, age-11 language criteria, and visible shell contract changed acceptance meaning.
 6. Reset by reloading a fresh fixture or rebuilding an in-memory explorer model. Stop the server normally. Delete checkpoint or workspace state only with the plan's exact confirmation boundaries.
 
 ## Feedback workflow
@@ -75,7 +75,7 @@ Setup: fresh URLs for all three fixtures. Reset: reload each URL. Default failur
 
 1. `act_orient`: Open each fixture without further instruction and pause before interacting. Expected: the activity starts immediately and is the only visible surface—there is no technical host title, status, or Start/Pause/Stop chrome. Within a few seconds, the purpose, available action, and subject are understandable; wording feels learner-facing rather than technical. Science and music declare the age-11 persona and ask a direct question with an obvious response, while math demonstrates an explicit adult alternative. No wording implies ability, diagnosis, or a fixed learning style.
 2. `act_visual`: Compare the three initial screens at a comfortable browser size. Expected: hierarchy, spacing, typography, contrast, and subject distinction feel deliberate and readable, with no clipping or visually confusing controls.
-3. `act_finish`: Complete one fixture and stop interacting. Expected: feedback and the end of the activity are unmistakable, with a clear sense of whether anything remains to do.
+3. `act_finish`: Complete one fixture and stop interacting. Expected: feedback is followed by a distinct `Activity complete` state, the response controls are gone, and the screen says there are no more questions in this activity.
 
 Pass when all three experiences are understandable for their declared persona on first use, visually coherent, appropriately concise, and unambiguous at completion.
 

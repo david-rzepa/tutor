@@ -6,6 +6,7 @@
   const input = document.querySelector("input");
   const check = document.querySelector("button");
   const status = document.querySelector("[role=status]");
+  const completion = document.querySelector("#completion");
   let sequence = 0;
   let config;
   function send(type, payload, privacy = "ephemeral") {
@@ -14,15 +15,26 @@
   addEventListener("message", (event) => {
     if (event.source !== parent || event.origin === "null" || event.data?.protocol !== protocol || event.data.session_id !== sessionId) return;
     if (event.data.type === "session.initialize") { config = event.data.payload; prompt.textContent = config.prompt; send("session.ready", { capabilities: ["attempt.recorded"], build_mode: "generated-app" }); }
-    if (event.data.type === "session.stop") { controls.remove(); status.textContent = "Stopped."; }
+    if (event.data.type === "session.stop") {
+      controls.remove();
+      completion.querySelector("h2").textContent = "Activity ended";
+      completion.querySelector("p").textContent = "You can close this page.";
+      completion.hidden = false;
+      completion.focus();
+      status.textContent = "Activity ended.";
+    }
   });
   function submitAttempt() {
     if (!input.value.trim()) { status.textContent = "Enter an estimate first."; return; }
     const normalized = input.value.trim().toLowerCase();
     const correct = config.accepted_answers.includes(normalized);
-    status.textContent = correct ? "Good estimate." : "Ten percent means divide by ten; try once more.";
-    send("attempt.recorded", { objective_id: config.objective_id, correct, scaffold: "none" }, "learning_record");
-    input.select();
+    status.textContent = correct ? "Good estimate. Activity complete." : "Ten percent means divide by ten; try once more.";
+    send("attempt.recorded", { objective_id: config.objective_id, correct, scaffold: "none", complete: correct }, "learning_record");
+    if (correct) {
+      controls.remove();
+      completion.hidden = false;
+      completion.focus();
+    } else input.select();
   }
   check.addEventListener("click", submitAttempt);
   input.addEventListener("keydown", (event) => { if (event.key === "Enter") submitAttempt(); });

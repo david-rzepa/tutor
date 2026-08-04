@@ -25,6 +25,21 @@ test("configuration and generated-code paths build inside the interactive budget
   } finally { await rm(output, { recursive: true, force: true }); }
 });
 
+test("template and generated paths provide an explicit terminal presentation", async () => {
+  const templateHtml = await readFile(path.resolve("examples/interactive-assistants/template/index.html"), "utf8");
+  const templateScript = await readFile(path.resolve("examples/interactive-assistants/template/card.js"), "utf8");
+  const generatedHtml = await readFile(path.resolve("examples/interactive-assistants/sources/adult-math-app/index.html"), "utf8");
+  const generatedScript = await readFile(path.resolve("examples/interactive-assistants/sources/adult-math-app/app.js"), "utf8");
+  for (const html of [templateHtml, generatedHtml]) {
+    assert.match(html, />Activity complete</);
+    assert.match(html, /There are no more questions in this activity\./);
+  }
+  for (const script of [templateScript, generatedScript]) {
+    assert.match(script, /completion\.hidden = false/);
+    assert.match(script, /completion\.focus\(\)/);
+  }
+});
+
 test("unsafe generated code falls back deterministically to a reviewed card", async () => {
   const base = await mkdtemp(path.join(os.tmpdir(), "tutor-unsafe-app-"));
   const source = path.join(base, "source");

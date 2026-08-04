@@ -7,6 +7,7 @@ const prompt = document.querySelector("#prompt");
 const hint = document.querySelector("#hint");
 const interaction = document.querySelector("#interaction");
 const feedback = document.querySelector("#feedback");
+const completion = document.querySelector("#completion");
 let sequence = 0;
 let state;
 let pendingAdaptation;
@@ -23,13 +24,20 @@ function send(type, payload, causedBy = null, privacy = "ephemeral") {
 function record(response) {
   const result = evaluateResponse(state, response);
   state = result.state;
-  feedback.textContent = result.feedback;
+  feedback.textContent = state.complete
+    ? `${result.correct ? result.feedback : "This question is finished."} Activity complete.`
+    : result.feedback;
   send("attempt.recorded", {
     objective_id: state.config.objective.id, correct: result.correct, scaffold: state.scaffold,
     attempt: state.attempts, complete: state.complete
   }, null, "learning_record");
   if (result.adaptation) pendingAdaptation = send("adaptation.requested", result.adaptation);
-  if (state.complete) interaction.querySelectorAll("button,input").forEach((control) => { control.disabled = true; });
+  if (state.complete) {
+    interaction.replaceChildren();
+    hint.hidden = true;
+    completion.hidden = false;
+    completion.focus();
+  }
 }
 
 function renderChoice() {
@@ -86,5 +94,12 @@ addEventListener("message", (event) => {
   }
   if (message.type === "session.pause") interaction.querySelectorAll("button,input").forEach((control) => { control.disabled = true; });
   if (message.type === "session.resume") interaction.querySelectorAll("button,input").forEach((control) => { control.disabled = state.complete; });
-  if (message.type === "session.stop") { interaction.replaceChildren(); feedback.textContent = "Stopped."; }
+  if (message.type === "session.stop") {
+    interaction.replaceChildren();
+    completion.querySelector("h2").textContent = "Activity ended";
+    completion.querySelector("p").textContent = "You can close this page.";
+    completion.hidden = false;
+    completion.focus();
+    feedback.textContent = "Activity ended.";
+  }
 });

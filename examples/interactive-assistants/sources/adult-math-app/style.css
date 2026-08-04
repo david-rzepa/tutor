@@ -3,4 +3,6 @@ body { margin: 0; padding: 1.25rem; background: Canvas; color: CanvasText; }
 form { display: flex; flex-wrap: wrap; gap: .75rem; }
 input, button { min-height: 2.75rem; padding: .6rem; font: inherit; }
 :focus-visible { outline: .2rem solid Highlight; outline-offset: .2rem; }
+#completion { margin-block-start: 1rem; padding: 1rem; border: .15rem solid Highlight; border-radius: .5rem; }
+#completion h2 { margin-block-start: 0; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

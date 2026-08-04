@@ -1,0 +1,10 @@
+:root { color-scheme: light dark; font-family: system-ui, sans-serif; line-height: 1.5; }
+body { margin: 0; background: Canvas; color: CanvasText; }
+main { max-width: 52rem; margin: auto; padding: clamp(1rem, 4vw, 3rem); }
+.eyebrow { font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
+nav { display: flex; flex-wrap: wrap; gap: .75rem; margin-block: 1rem; }
+button { min-height: 2.75rem; min-width: 5rem; padding: .6rem 1rem; font: inherit; }
+button:focus-visible, iframe:focus-visible { outline: .2rem solid Highlight; outline-offset: .2rem; }
+iframe { width: 100%; min-height: 20rem; border: 1px solid GrayText; border-radius: .5rem; }
+[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }

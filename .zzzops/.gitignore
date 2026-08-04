@@ -1,0 +1,7 @@
+# BEGIN ZZZOPS LOCAL STATE
+init/
+migration/plan.json
+migration/SUMMARY.md
+migration/*.tmp
+execution-reports/
+# END ZZZOPS LOCAL STATE

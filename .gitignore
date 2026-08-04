@@ -1,0 +1,16 @@
+# BEGIN ZZZOPS DISPOSABLE MACHINERY
+/.agents/skills/add-zzzops-goal/
+/.agents/skills/execute-zzzops/
+/.agents/skills/migrate-to-zzzops/
+/.agents/skills/review-zzzops-policy/
+/.agents/skills/send-zzzops-feedback/
+/.agents/skills/suggest-zzzops-work/
+/.agents/zzzops/
+/.claude/skills/add-zzzops-goal/
+/.claude/skills/execute-zzzops/
+/.claude/skills/migrate-to-zzzops/
+/.claude/skills/review-zzzops-policy/
+/.claude/skills/send-zzzops-feedback/
+/.claude/skills/suggest-zzzops-work/
+/.zzzops/rules/
+# END ZZZOPS DISPOSABLE MACHINERY

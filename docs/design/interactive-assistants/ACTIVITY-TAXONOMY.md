@@ -21,4 +21,4 @@ Select an assistant by the mental operation and evidence need. Representation pr
 - Use short rounds, varied meaningful contexts, and an explicit ending. Schedule later retrieval instead of prolonging the current session.
 - Templates declare input modalities, accessible equivalents, scoring limits, generation slots, fallback content, evidence schema, and prohibited uses.
 
-See the research on [retrieval, feedback, flow, and learning styles](../../research/learning-design/PRINCIPLES.md) and the [French-specific rules](../../research/learning-design/FRENCH-AGE-11.md#language-specific-design-rules).
+See the research on [retrieval, feedback, flow, and learning styles](../../research/learning-design/PRINCIPLES.md). Subject-specific rules belong in curriculum content and validation, not in the reusable activity mechanism.

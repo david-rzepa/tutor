@@ -27,9 +27,9 @@ This order derives from the [research decision kernel](../../research/learning-d
 | Select an objective from a learner’s subject path and return progress evidence | [Curriculum DAGs](../curriculum-dag/README.md) |
 | Apply safety, privacy, accessibility, or generation gates | [QUALITY-GATES.md](QUALITY-GATES.md) |
 | Audit research traceability and uncertainty | [DESIGN-BASIS.md](DESIGN-BASIS.md) |
-| Trace an age-11 French session end to end | [FRENCH-WALKTHROUGH.md](FRENCH-WALKTHROUGH.md) |
+| Trace a small cross-domain activity end to end | [SIMPLE-CARD-WALKTHROUGH.md](SIMPLE-CARD-WALKTHROUGH.md) |
 | Plan the implementation milestone | [IMPLEMENTATION-HANDOFF.md](IMPLEMENTATION-HANDOFF.md) |
 
 ## Scope boundary
 
-This is a technology-neutral product and protocol design. Goal #4 owns implementation of the local host, reusable teaching toolkit, and example assistants. Goal #5 owns the consented feedback/effectiveness loop. The public repository is not a learner-record or transcript store.
+The design is domain-neutral and the first local implementation lives under `src/interactive-assistant-harness` and `examples/interactive-assistants`. Goal #5 owns the consented feedback/effectiveness loop. The public repository is not a learner-record or transcript store.

@@ -2,7 +2,7 @@
 
 ## Decision
 
-Begin with sandboxed local web applications inside a trusted host. Use a transport-neutral protocol with a browser adapter first. Package reusable UI, protocol, evidence, accessibility, feedback, and teaching mechanics as a shared toolkit; assistants should mostly be template configuration plus curriculum content.
+Begin with sandboxed local web applications inside a trusted host. Use a transport-neutral protocol with a browser adapter first. Package reusable UI, protocol, evidence, accessibility, feedback, and teaching mechanics as a shared toolkit. Support both generated configuration for reviewed templates and small generated application code.
 
 ## Rationale
 
@@ -18,7 +18,7 @@ Begin with sandboxed local web applications inside a trusted host. Use a transpo
 | Agent-rendered chat/widgets | trivial orchestration | encourages chat-first teaching, weak mechanics reuse, agent latency in common path |
 | Native app/plugin runtime | stronger device integration | slower iteration and platform fragmentation before the contract is proven |
 | Remote hosted micro-apps | central rollout and analytics | expands network, identity, child-data, availability, and deployment boundaries |
-| Arbitrary generated HTML | maximum flexibility | unacceptable security, accessibility, validation, and reproducibility risk |
+| Unbounded generated applications | maximum flexibility | unacceptable security, accessibility, validation, and reproducibility risk; bounded generated code remains supported |
 
 ## Trust boundary
 

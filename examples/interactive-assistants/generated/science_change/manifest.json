@@ -1,0 +1,26 @@
+{
+  "schema": "tutor.built-activity/v1",
+  "activity_id": "science_change",
+  "mode": "template-config",
+  "entry": "/examples/template/index.html",
+  "config": "config.json",
+  "files": [
+    {
+      "path": "config.json",
+      "bytes": 1248,
+      "sha256": "2183b17af16220020d029814656593769ee692656090e956a6a020ae5c44b990"
+    }
+  ],
+  "budget": {
+    "maxConfigBytes": 8192,
+    "maxGeneratedAppBytes": 24576,
+    "maxGeneratedFiles": 4,
+    "maxSingleFileBytes": 12288,
+    "maxItems": 8,
+    "maxUiStates": 4,
+    "maxAgentCallbacks": 1,
+    "targetBuildMilliseconds": 500
+  },
+  "fallback": false,
+  "validation_errors": []
+}

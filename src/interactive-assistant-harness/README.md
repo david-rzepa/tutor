@@ -3,10 +3,12 @@
 A dependency-free local host for sandboxed, domain-neutral learning activities.
 
 ```powershell
-node src/interactive-assistant-harness/server-cli.js
+node src/interactive-assistant-harness/server.js 41739
 ```
 
-Open the printed loopback URL. The included classification fixture proves the bridge; goal #8 supplies the cross-domain on-demand activity examples.
+Open the printed loopback URL. The included classification fixture proves the bridge; the examples directory supplies cross-domain on-demand activities.
+
+After building examples, append `?card=<activity-id>` to launch either a configured template card or a validated generated application through the same sandbox and protocol.
 
 ## Trust boundary
 

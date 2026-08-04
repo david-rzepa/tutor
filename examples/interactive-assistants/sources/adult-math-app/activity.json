@@ -1,0 +1,13 @@
+{
+  "schema": "tutor.generated-activity/v1",
+  "activity_id": "adult_math_recall",
+  "objective": {"id": "estimate_tip", "label": "Estimate a percentage mentally"},
+  "entry": "index.html",
+  "limits": {"ui_states": 3, "max_agent_callbacks": 0},
+  "session_config": {
+    "objective_id": "estimate_tip",
+    "prompt": "Estimate 10% of 48 without a calculator.",
+    "accepted_answers": ["4.8", "about 5", "5"],
+    "privacy": "learning_record"
+  }
+}

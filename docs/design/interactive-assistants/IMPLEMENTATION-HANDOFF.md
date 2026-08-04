@@ -1,6 +1,6 @@
 # Implementation handoff
 
-Goal #4 should implement the smallest vertical slice that proves the architecture before adding a large activity library.
+Implement the smallest vertical slice that proves the architecture before adding a large activity library.
 
 ## Milestone 1: contract and host
 
@@ -18,9 +18,14 @@ Goal #4 should implement the smallest vertical slice that proves the architectur
 - reviewed templates for at least two distinct mechanisms, recommended: classification/contrast and cued-to-unaided production;
 - no points/streak machinery in the foundation.
 
-## Milestone 3: French vertical slice
+## Milestone 3: two on-demand build paths
 
-Implement [Café Choix](FRENCH-WALKTHROUGH.md), including successful, repeated-error adaptation, callback-timeout fallback, stop, and accessibility paths. Use only synthetic learner data and fictional content.
+Implement the [small card trace](SIMPLE-CARD-WALKTHROUGH.md) through both first-class paths:
+
+- generated bounded JSON for a reviewed template; and
+- generated, validated HTML/CSS/JavaScript for an interaction that does not fit the template.
+
+Keep both paths within explicit file, byte, state, item, callback, and build-time budgets. Route invalid or unsafe output to one deterministic reviewed fallback. Use at least two unrelated subject examples so no domain becomes an architectural assumption.
 
 ## Required tests
 
@@ -29,7 +34,7 @@ Implement [Café Choix](FRENCH-WALKTHROUGH.md), including successful, repeated-e
 3. Persistent error requests an easier scaffold; agent applies it; assistant fades after evidence.
 4. Late or invalid agent output triggers deterministic fallback and remains replayable.
 5. Restart does not duplicate evidence; stop/consent revocation prevents later work.
-6. Two activity types reuse toolkit mechanics rather than copied implementations.
+6. Unrelated subject examples reuse toolkit mechanics rather than copied implementations.
 7. Keyboard and screen-reader-critical path, reflow, reduced motion, and non-audio route.
 8. Sandbox cannot access undeclared network, device, filesystem, credentials, or learner profile.
 9. Result contains structured evidence/provenance and no raw transcript or stable identity.
@@ -53,4 +58,4 @@ Each is independently capturable; dependencies should preserve the order: fixed 
 
 ## Definition of done
 
-The synthetic trace runs end to end locally and offline after asset load; two templates share the toolkit; all quality gates pass; protocol and assistant/content versions are reproducible; failure and rollback paths are documented; and evidence can be interpreted without loading a transcript.
+The synthetic trace runs end to end locally and offline after asset load; reviewed configuration and generated application code share the host and protocol; unrelated subject examples stay inside the build budgets; invalid output falls back deterministically; all quality gates pass; artifacts are reproducible; and evidence can be interpreted without loading a transcript.

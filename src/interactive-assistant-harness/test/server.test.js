@@ -25,6 +25,11 @@ test("serves the host and assistant with restrictive, distinct policies", async 
   const toolkit = await fetch(`${url}/packages/teaching-tools/src/index.js`);
   assert.equal(toolkit.status, 200);
   assert.equal(toolkit.headers.get("x-content-type-options"), "nosniff");
+
+  const template = await fetch(`${url}/examples/template/index.html`);
+  assert.equal(template.status, 200);
+  assert.match(template.headers.get("content-security-policy"), /connect-src 'none'/);
+  assert.equal(template.headers.get("access-control-allow-origin"), "*");
 }));
 
 test("rejects traversal, non-loopback hosts, writes, and unknown files", async () => withServer(async ({ server, url }) => {
@@ -43,7 +48,7 @@ test("rejects traversal, non-loopback hosts, writes, and unknown files", async (
 }));
 
 test("all shell assets needed after load are local and available offline", async () => withServer(async ({ url }) => {
-  for (const path of ["/", "/styles.css", "/host-app.js", "/harness/bridge.js", "/packages/teaching-tools/src/index.js", "/fixture/index.html", "/fixture/fixture.css", "/fixture/fixture.js"]) {
+  for (const path of ["/", "/styles.css", "/host-app.js", "/harness/bridge.js", "/packages/teaching-tools/src/index.js", "/fixture/index.html", "/fixture/fixture.css", "/fixture/fixture.js", "/examples/template/index.html", "/examples/template/card.css", "/examples/template/card.js", "/examples/template/engine.js"]) {
     const response = await fetch(`${url}${path === "/" ? "" : path}`);
     assert.equal(response.status, 200, path);
   }

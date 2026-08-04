@@ -1,0 +1,14 @@
+{
+  "schema": "tutor.activity-card/v1",
+  "activity_id": "reviewed_fallback",
+  "objective": {"id": "generic_check", "label": "Check one idea"},
+  "mechanic": "choice",
+  "prompt": "Which option is the same as the example?",
+  "items": [{"id": "same", "label": "The same"}, {"id": "different", "label": "Different"}],
+  "answer": "same",
+  "feedback": {"correct": "That matches.", "retry": "Try comparing one feature at a time."},
+  "scaffold": {"hint": "Look for the option that has not changed.", "after_errors": 1},
+  "presentation": {"audience": "general", "accessible_alternative": "semantic buttons"},
+  "limits": {"max_attempts": 2, "max_agent_callbacks": 0, "ui_states": 3},
+  "curriculum_ref": {"curriculum_id": "synthetic", "graph_id": "synthetic", "node_id": "synthetic", "evidence_need": "diagnostic"}
+}

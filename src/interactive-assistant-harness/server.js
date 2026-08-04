@@ -10,6 +10,8 @@ const REPO_ROOT = path.resolve(HERE, "../..");
 const MOUNTS = [
   { prefix: "/harness/", root: HERE, policy: "module" },
   { prefix: "/packages/teaching-tools/src/", root: path.join(REPO_ROOT, "packages/teaching-tools/src"), policy: "module" },
+  { prefix: "/examples/template/", root: path.join(REPO_ROOT, "examples/interactive-assistants/template"), policy: "assistant" },
+  { prefix: "/examples/generated/", root: path.join(REPO_ROOT, "examples/interactive-assistants/generated"), policy: "assistant" },
   { prefix: "/fixture/", root: path.join(HERE, "fixture"), policy: "assistant" },
   { prefix: "/", root: path.join(HERE, "public"), policy: "host" }
 ];
@@ -22,7 +24,7 @@ const TYPES = new Map([
 ]);
 
 const CSP = {
-  host: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+  host: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   assistant: "default-src 'none'; script-src http://127.0.0.1:*; style-src http://127.0.0.1:*; img-src data: http://127.0.0.1:*; media-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors http://127.0.0.1:*",
   module: "default-src 'none'; frame-ancestors 'none'"
 };
@@ -85,6 +87,7 @@ export function createHarnessServer() {
         "Content-Length": fileStat.size,
         "Content-Security-Policy": CSP[mounted.policy],
         "Cross-Origin-Resource-Policy": mounted.policy === "assistant" ? "cross-origin" : "same-origin",
+        ...(mounted.policy !== "host" ? { "Access-Control-Allow-Origin": "*" } : {}),
         "Referrer-Policy": "no-referrer",
         "X-Content-Type-Options": "nosniff",
         "Cache-Control": "no-store"
@@ -106,4 +109,13 @@ export async function listenHarness({ port = 0 } = {}) {
   });
   const address = server.address();
   return { server, url: `http://127.0.0.1:${address.port}` };
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const requestedPort = Number.parseInt(process.argv[2] ?? "41739", 10);
+  if (!Number.isInteger(requestedPort) || requestedPort < 0 || requestedPort > 65535) {
+    throw new Error("Port must be an integer from 0 through 65535");
+  }
+  const { url } = await listenHarness({ port: requestedPort });
+  console.log(`Interactive assistant harness listening at ${url}`);
 }

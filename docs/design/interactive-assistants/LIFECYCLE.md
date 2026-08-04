@@ -6,7 +6,7 @@ Declare capability, learner population/bounds, prerequisite assumptions, proxima
 
 ## 2. Select or generate
 
-Prefer a reviewed template plus approved curriculum content. Generate a new assistant only when configuration cannot serve the objective. Reuse mechanics; tailor examples, representations, scaffolds, and content within declared slots.
+Prefer a reviewed template plus approved curriculum content when its mechanism fits. The agent may instead generate a small application when code expresses the needed interaction more directly. Both paths are normal: reuse mechanics where useful, enforce construction budgets, and require the same protocol, sandbox, evidence, accessibility, and fallback contracts.
 
 ## 3. Validate
 

@@ -1,0 +1,14 @@
+{
+  "schema": "tutor.activity-card/v1",
+  "activity_id": "music_order",
+  "objective": {"id": "order_note_values", "label": "Order three note values"},
+  "mechanic": "sequence",
+  "prompt": "Choose the durations from shortest to longest.",
+  "items": [{"id": "half", "label": "Half beat"}, {"id": "two", "label": "Two beats"}, {"id": "one", "label": "One beat"}],
+  "answer": ["half", "one", "two"],
+  "feedback": {"correct": "Correct: half, one, then two beats.", "retry": "Start with the duration that ends first."},
+  "scaffold": {"hint": "Compare half a beat with one full beat before placing two beats.", "after_errors": 1},
+  "presentation": {"audience": "general", "accessible_alternative": "keyboard-operable labeled buttons; no audio required for this duration objective"},
+  "limits": {"max_attempts": 3, "max_agent_callbacks": 1, "ui_states": 4},
+  "curriculum_ref": {"curriculum_id": "cur_synthetic_music", "graph_id": "grf_synthetic_1", "node_id": "cap_order_note_values", "evidence_need": "diagnostic"}
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "tutor.activity-card/v1",
+  "activity_id": "science_change",
+  "objective": {
+    "id": "predict_change",
+    "label": "Predict one change"
+  },
+  "mechanic": "choice",
+  "prompt": "A plant is moved farther from a window. Which immediate change is most likely?",
+  "items": [
+    {
+      "id": "less_light",
+      "label": "It receives less light"
+    },
+    {
+      "id": "more_light",
+      "label": "It receives more light"
+    },
+    {
+      "id": "same_light",
+      "label": "The light is unchanged"
+    }
+  ],
+  "answer": "less_light",
+  "feedback": {
+    "correct": "Yes. Greater distance usually means less window light.",
+    "retry": "Compare only the distance and amount of light."
+  },
+  "scaffold": {
+    "hint": "Imagine the same lamp close to you and across the room.",
+    "after_errors": 2
+  },
+  "presentation": {
+    "audience": "child-or-general",
+    "accessible_alternative": "semantic text buttons; no image required"
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_agent_callbacks": 1,
+    "ui_states": 4
+  },
+  "curriculum_ref": {
+    "curriculum_id": "cur_synthetic_science",
+    "graph_id": "grf_synthetic_1",
+    "node_id": "cap_predict_change",
+    "evidence_need": "provisional-varied-unaided"
+  }
+}

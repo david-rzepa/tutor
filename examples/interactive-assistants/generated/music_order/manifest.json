@@ -1,0 +1,26 @@
+{
+  "schema": "tutor.built-activity/v1",
+  "activity_id": "music_order",
+  "mode": "template-config",
+  "entry": "/examples/template/index.html",
+  "config": "config.json",
+  "files": [
+    {
+      "path": "config.json",
+      "bytes": 1189,
+      "sha256": "2a9b41ad09e0807011ea51cfe673aac9d21e950ca3759760db7f119a659fbc53"
+    }
+  ],
+  "budget": {
+    "maxConfigBytes": 8192,
+    "maxGeneratedAppBytes": 24576,
+    "maxGeneratedFiles": 4,
+    "maxSingleFileBytes": 12288,
+    "maxItems": 8,
+    "maxUiStates": 4,
+    "maxAgentCallbacks": 1,
+    "targetBuildMilliseconds": 500
+  },
+  "fallback": false,
+  "validation_errors": []
+}

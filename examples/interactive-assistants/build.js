@@ -21,6 +21,7 @@ async function publishJson(outputRoot, activityId, config, metadata = {}) {
     mode: "template-config",
     entry: "/examples/template/index.html",
     config: "config.json",
+    presentation: config.presentation,
     files: [{ path: "config.json", bytes: new TextEncoder().encode(configText).byteLength, sha256: digest(configText) }],
     budget: ACTIVITY_BUDGET,
     ...metadata
@@ -66,7 +67,7 @@ export async function buildGeneratedActivity({ sourceDir, outputRoot = DEFAULT_O
     const builtManifest = {
       schema: "tutor.built-activity/v1", activity_id: manifest.activity_id, mode: "generated-app",
       entry: `/examples/generated/${manifest.activity_id}/app/${manifest.entry}`,
-      session_config: manifest.session_config, files: fileRecords, budget: ACTIVITY_BUDGET
+      presentation: manifest.presentation, session_config: manifest.session_config, files: fileRecords, budget: ACTIVITY_BUDGET
     };
     await writeFile(path.join(directory, "manifest.json"), `${JSON.stringify(builtManifest, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
     return { directory, manifest: builtManifest, fallback: false, totalBytes: validated.totalBytes, buildMilliseconds: performance.now() - started };

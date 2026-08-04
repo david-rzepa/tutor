@@ -3,10 +3,10 @@
   "activity_id": "science_change",
   "objective": {
     "id": "predict_change",
-    "label": "Predict one change"
+    "label": "What happens to the light?"
   },
   "mechanic": "choice",
-  "prompt": "A plant is moved farther from a window. Which immediate change is most likely?",
+  "prompt": "A plant is moved farther away from a window. Does it get more light, less light, or the same amount?",
   "items": [
     {
       "id": "less_light",
@@ -31,7 +31,7 @@
     "after_errors": 2
   },
   "presentation": {
-    "audience": "child-or-general",
+    "learner_persona": "age-11",
     "accessible_alternative": "semantic text buttons; no image required"
   },
   "limits": {

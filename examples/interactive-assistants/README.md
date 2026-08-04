@@ -7,6 +7,8 @@ The agent has two first-class ways to make a small activity:
 
 Both paths are validated against [budget.js](budget.js), run in the same opaque-origin sandbox, use `tutor.assistant/v1`, and fall back to [fallback.json](fallback.json) when validation fails.
 
+Every reviewed activity declares a learner persona. `age-11` is the child-facing acceptance baseline; `adult` and `caregiver-mediated` are explicit alternatives. A persona controls wording and presentation choices only—it must not be used to infer ability, diagnosis, or a fixed learning style. Prompts should read as direct questions with an obvious response action.
+
 ## Build the synthetic examples
 
 ```powershell

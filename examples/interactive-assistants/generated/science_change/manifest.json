@@ -4,11 +4,15 @@
   "mode": "template-config",
   "entry": "/examples/template/index.html",
   "config": "config.json",
+  "presentation": {
+    "learner_persona": "age-11",
+    "accessible_alternative": "semantic text buttons; no image required"
+  },
   "files": [
     {
       "path": "config.json",
-      "bytes": 1248,
-      "sha256": "2183b17af16220020d029814656593769ee692656090e956a6a020ae5c44b990"
+      "bytes": 1275,
+      "sha256": "3085530af5194a69be9ba220c836c6e2c1ecd3f4c16672c08a00717bfd430c3b"
     }
   ],
   "budget": {

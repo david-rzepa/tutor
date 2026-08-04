@@ -3,9 +3,12 @@
   "activity_id": "adult_math_recall",
   "mode": "generated-app",
   "entry": "/examples/generated/adult_math_recall/app/index.html",
+  "presentation": {
+    "learner_persona": "adult"
+  },
   "session_config": {
     "objective_id": "estimate_tip",
-    "prompt": "Estimate 10% of 48 without a calculator.",
+    "prompt": "What is 10% of 48? Try it without a calculator.",
     "accepted_answers": [
       "4.8",
       "about 5",

@@ -1,0 +1,15 @@
+{
+  "name": "tutor",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "test:toolkit": "node --test packages/teaching-tools/test/*.test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

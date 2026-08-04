@@ -1,6 +1,6 @@
 # Human-driven acceptance test plan
 
-- Plan version: **3.1.0**
+- Plan version: **3.2.0**
 - Product baseline: repository `main` at or after goal #22
 - Decision owner: the human acceptance owner; never the facilitating agent
 
@@ -23,7 +23,7 @@ Automated evidence covers network/origin policy, sandboxing, schemas, event sequ
 | Human-visible surface | Status |
 |---|---|
 | Three local tiny-assistant fixtures | Runnable on Windows |
-| Pause, resume, stop, pointer, and keyboard controls | Runnable on Windows |
+| Protocol stop/safety enforcement | Automated prerequisite; no persistent learner-facing host controls |
 | Curriculum explorer render and text summary | Runnable after agent setup |
 | Unified onboarding-to-lesson application | Unavailable; critical journey coverage remains blocked |
 | Agent-led browser conversation with inline activity history | Unavailable |
@@ -38,7 +38,7 @@ Supported test browsers are current Chromium or Edge on Windows. Other browsers 
 2. Run every automated prerequisite without delegating it to the human.
 3. Create a disposable `tutor.workspace/v1` manifest with an opaque `workspace_id` and `test_only: true`.
 4. Build the fixtures and start `node src/interactive-assistant-harness/server.js 41739` on its printed loopback URL.
-5. Initialize the checkpoint with plan version `3.1.0`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow and age-11 language criteria changed acceptance meaning.
+5. Initialize the checkpoint with plan version `3.2.0`, the exact product commit, opaque run ID, disposable manifest, and `--synthetic-confirmed`. Older checkpoints fail closed because the human-only workflow, age-11 language criteria, and visible shell contract changed acceptance meaning.
 6. Reset by reloading a fresh fixture or rebuilding an in-memory explorer model. Stop the server normally. Delete checkpoint or workspace state only with the plan's exact confirmation boundaries.
 
 ## Feedback workflow
@@ -64,7 +64,6 @@ Evidence references may name privacy-safe local artifacts such as `screens/first
 |---|---|---|
 | `scn_first_use` | comprehension, aesthetics, and perceived completion | runnable |
 | `scn_interaction` | affordances, feedback, help, pointer/keyboard parity | runnable |
-| `scn_control` | confidence in pause, resume, and stop | runnable |
 | `scn_access` | keyboard-only and reduced-motion experience | runnable |
 | `scn_explorer` | visual/non-visual comprehension and orientation | agent setup required |
 
@@ -74,7 +73,7 @@ Evidence references may name privacy-safe local artifacts such as `screens/first
 
 Setup: fresh URLs for all three fixtures. Reset: reload each URL. Default failure severity: major for incomprehensible completion; minor for recoverable visual polish.
 
-1. `act_orient`: Open each fixture without further instruction and pause before interacting. Expected: within a few seconds, the purpose, available action, and subject are understandable; wording feels learner-facing rather than technical. Science and music declare the age-11 persona and ask a direct question with an obvious response, while math demonstrates an explicit adult alternative. No wording implies ability, diagnosis, or a fixed learning style.
+1. `act_orient`: Open each fixture without further instruction and pause before interacting. Expected: the activity starts immediately and is the only visible surface—there is no technical host title, status, or Start/Pause/Stop chrome. Within a few seconds, the purpose, available action, and subject are understandable; wording feels learner-facing rather than technical. Science and music declare the age-11 persona and ask a direct question with an obvious response, while math demonstrates an explicit adult alternative. No wording implies ability, diagnosis, or a fixed learning style.
 2. `act_visual`: Compare the three initial screens at a comfortable browser size. Expected: hierarchy, spacing, typography, contrast, and subject distinction feel deliberate and readable, with no clipping or visually confusing controls.
 3. `act_finish`: Complete one fixture and stop interacting. Expected: feedback and the end of the activity are unmistakable, with a clear sense of whether anything remains to do.
 
@@ -89,15 +88,6 @@ Setup: fresh fixture URL. Reset: reload between attempts. Default failure severi
 3. `act_help`: Find and request help before completing an item. Expected: help is easy to discover, gives one bounded scaffold, and leaves the learner confidently able to retry.
 
 Pass when a learner can discover, operate, recover, and request support without developer knowledge or unexplained dead ends.
-
-### `scn_control` — pause, resume, and stop confidence
-
-Setup: any fresh running fixture. Reset: reload. Default failure severity: blocking for stop; major otherwise.
-
-1. `act_pause`: Begin an attempt, pause, wait briefly, and resume. Expected: the labels and state change are understandable; the experience feels safely paused and resumes without surprise or duplicated work.
-2. `act_stop`: Begin a fresh attempt, stop, and try to continue. Expected: the finality of Stop is clear before and after activation, later interaction is rejected understandably, and the learner remains in control.
-
-Pass when controls use learner-facing language, their consequences are predictable, and Stop is final.
 
 ### `scn_access` — accessible experience
 

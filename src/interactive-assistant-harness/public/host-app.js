@@ -1,21 +1,13 @@
 import { HostBridge, HostSecurityError } from "/harness/bridge.js";
 
 const frame = document.querySelector("#assistant");
-const start = document.querySelector("#start");
-const pause = document.querySelector("#pause");
-const stop = document.querySelector("#stop");
 const status = document.querySelector("#status");
 let bridge;
 let pendingConfiguration;
 
-function setStatus(text) { status.textContent = text; }
-
-function configureControls(state) {
-  const active = state === "running" || state === "paused";
-  start.disabled = active;
-  pause.disabled = !active;
-  pause.textContent = state === "paused" ? "Resume" : "Pause";
-  stop.disabled = !active;
+function setStatus(text, visible = false) {
+  status.textContent = text;
+  status.classList.toggle("sr-only", !visible);
 }
 
 async function selectActivity() {
@@ -47,29 +39,25 @@ async function selectActivity() {
   return { entry: manifest.entry, configuration: await configResponse.json() };
 }
 
-start.addEventListener("click", async () => {
-  start.disabled = true;
+async function launchActivity() {
   setStatus("Loading activity...");
   try {
     const selected = await selectActivity();
     pendingConfiguration = selected.configuration;
-    frame.hidden = false;
     frame.src = `${selected.entry}?session=${encodeURIComponent(crypto.randomUUID())}`;
   } catch {
-    start.disabled = false;
-    setStatus("The activity could not be validated. Choose a reviewed fallback.");
+    setStatus("This activity could not be loaded.", true);
   }
-});
+}
 
 frame.addEventListener("load", async () => {
-  if (frame.hidden || !frame.src || frame.src === "about:blank") return;
+  if (!frame.src || frame.src === "about:blank") return;
   const sessionId = new URL(frame.src).searchParams.get("session");
   bridge = new HostBridge({
     sessionId,
     expectedSource: frame.contentWindow,
     postMessage: (message) => frame.contentWindow.postMessage(message, "*"),
     onStateChange: (state, message) => {
-      configureControls(state.status);
       if (message.type === "session.ready") setStatus("Activity ready.");
       if (message.type === "attempt.recorded") setStatus(message.payload.correct ? "That matches." : "Use the feedback and try again.");
       if (message.type === "adaptation.requested") {
@@ -79,7 +67,7 @@ frame.addEventListener("load", async () => {
           rationale_code: "bounded_demo_policy"
         }, { causedBy: message.message_id });
       }
-      if (message.type === "session.stop") setStatus("Activity stopped.");
+      if (message.type === "session.stop") setStatus("Activity ended.", true);
     }
   });
   bridge.initialize(pendingConfiguration ?? (await selectActivity()).configuration);
@@ -90,26 +78,9 @@ window.addEventListener("message", (event) => {
   try { bridge.receive(event); }
   catch (error) {
     if (error instanceof HostSecurityError) return;
-    setStatus("The activity sent an invalid message and was stopped.");
+    setStatus("The activity encountered a problem and was stopped.", true);
     try { bridge.send("session.stop", { reason: "protocol_error" }); } catch {}
   }
 });
 
-pause.addEventListener("click", () => {
-  if (!bridge) return;
-  if (bridge.state.status === "paused") {
-    bridge.send("session.resume", { reason: "learner" });
-    setStatus("Activity resumed.");
-  } else {
-    bridge.send("session.pause", { reason: "learner" });
-    setStatus("Activity paused.");
-  }
-  configureControls(bridge.state.status);
-});
-
-stop.addEventListener("click", () => {
-  if (!bridge) return;
-  bridge.send("session.stop", { reason: "learner" });
-  setStatus("Activity stopped. Your choice is saved only if the learning record permits it.");
-  configureControls(bridge.state.status);
-});
+launchActivity();

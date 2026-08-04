@@ -6,12 +6,15 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-test("shell exposes learner controls and an opaque-origin sandbox", async () => {
+test("shell launches the activity without persistent host chrome and keeps an opaque-origin sandbox", async () => {
   const html = await readFile(path.join(ROOT, "public/index.html"), "utf8");
-  assert.match(html, /aria-label="Activity controls"/);
+  const script = await readFile(path.join(ROOT, "public/host-app.js"), "utf8");
   assert.match(html, /role="status"/);
-  assert.match(html, /id="pause"/);
-  assert.match(html, /id="stop"/);
+  assert.match(html, /class="sr-only"/);
+  assert.doesNotMatch(html, /<header|<nav|id="start"|id="pause"|id="stop"/);
+  assert.match(script, /launchActivity\(\);/);
+  assert.match(script, /could not be loaded\.\", true/);
+  assert.doesNotMatch(script, /querySelector\("#(?:start|pause|stop)"\)/);
   assert.match(html, /sandbox="allow-scripts"/);
   assert.doesNotMatch(html, /allow-same-origin|allow-forms|allow-popups|allow-top-navigation/);
 });

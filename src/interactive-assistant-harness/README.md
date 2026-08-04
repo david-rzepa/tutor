@@ -8,7 +8,7 @@ node src/interactive-assistant-harness/server.js 41739
 
 Open the printed loopback URL. The included classification fixture proves the bridge; the examples directory supplies cross-domain on-demand activities.
 
-After building examples, append `?card=<activity-id>` to launch either a configured template card or a validated generated application through the same sandbox and protocol.
+After building examples, append `?card=<activity-id>` to launch either a configured template card or a validated generated application immediately through the same sandbox and protocol. The host adds no visible title, status, or persistent Start/Pause/Stop chrome around the activity; status remains available to assistive technology, while protocol-level stop and safety enforcement remain in the bridge.
 
 ## Trust boundary
 

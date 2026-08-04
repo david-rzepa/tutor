@@ -64,6 +64,20 @@ test("checkpoint integrity rejects unsafe workspace, binding, evidence, sequenci
   } finally { await rm(value.root, { recursive: true, force: true }); }
 });
 
+test("reduced-motion action requires privacy-safe setup and reset evidence", async () => {
+  const value = await fixture();
+  try {
+    initialize(value);
+    assert.match(invoke(["begin-action", ...binding(value), "--scenario", "scn_access", "--action", "act_motion"], 2).error, /requires verified setup evidence/);
+    invoke(["begin-action", ...binding(value), "--scenario", "scn_access", "--action", "act_motion", "--setup-ref", "artifacts/reduced-motion-active.json"]);
+    invoke(["observe", ...binding(value), "--category", "as-expected"]);
+    assert.match(invoke(["complete-action", ...binding(value), "--outcome", "match", "--assigned-by", "human"], 2).error, /requires verified reset evidence/);
+    invoke(["complete-action", ...binding(value), "--outcome", "match", "--reset-ref", "artifacts/reduced-motion-reset.json", "--assigned-by", "human"]);
+    invoke(["verdict", ...binding(value), "--scenario", "scn_access", "--value", "pass", "--severity", "not-applicable", "--assigned-by", "human"]);
+    assert.deepEqual(invoke(["summary", ...binding(value)]).evidence_refs, ["artifacts/reduced-motion-active.json", "artifacts/reduced-motion-reset.json"]);
+  } finally { await rm(value.root, { recursive: true, force: true }); }
+});
+
 test("initialized checkpoint fails closed on all negative integrity paths", async () => {
   const value = await fixture();
   try {

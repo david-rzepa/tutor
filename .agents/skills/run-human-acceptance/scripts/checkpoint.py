@@ -173,7 +173,10 @@ def command_begin(args: argparse.Namespace) -> dict[str, Any]:
             raise StateError("scenario already has a human verdict")
         if any(item["action"] == action for item in record["actions"]):
             raise StateError("action was already recorded")
-        state["active"] = {"scenario": scenario, "action": action, "observation": None}
+        setup_ref = require_ref(args.setup_ref)
+        if scenario == "scn_access" and action == "act_motion" and setup_ref is None:
+            raise StateError("reduced-motion action requires verified setup evidence")
+        state["active"] = {"scenario": scenario, "action": action, "observation": None, **({"setup_evidence_ref": setup_ref} if setup_ref else {})}
     return mutate(args, operation)
 
 
@@ -193,7 +196,10 @@ def command_complete(args: argparse.Namespace) -> dict[str, Any]:
         active = state["active"]
         if active is None or active["observation"] is None:
             raise StateError("record the human observation before the human-assigned outcome")
-        state["scenarios"][active["scenario"]]["actions"].append({**active, "outcome": args.outcome})
+        reset_ref = require_ref(args.reset_ref)
+        if active["scenario"] == "scn_access" and active["action"] == "act_motion" and reset_ref is None:
+            raise StateError("reduced-motion action requires verified reset evidence")
+        state["scenarios"][active["scenario"]]["actions"].append({**active, "outcome": args.outcome, **({"reset_evidence_ref": reset_ref} if reset_ref else {})})
         state["active"] = None
     return mutate(args, operation)
 
@@ -261,6 +267,9 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
         for action in record["actions"]:
             if action["observation"]["evidence_ref"]:
                 evidence.add(action["observation"]["evidence_ref"])
+            for field in ("setup_evidence_ref", "reset_evidence_ref"):
+                if action.get(field):
+                    evidence.add(action[field])
         if record["verdict"]["evidence_ref"]:
             evidence.add(record["verdict"]["evidence_ref"])
     return {
@@ -312,9 +321,9 @@ def parser() -> argparse.ArgumentParser:
     init = commands.add_parser("init"); add_binding(init)
     init.add_argument("--run-id", required=True); init.add_argument("--platform", choices=("windows", "macos", "linux"), required=True)
     init.add_argument("--product-checkpoint", required=True); init.add_argument("--workspace-manifest", required=True); init.add_argument("--synthetic-confirmed", action="store_true"); init.set_defaults(handler=command_init)
-    begin = commands.add_parser("begin-action"); add_binding(begin); begin.add_argument("--scenario", required=True); begin.add_argument("--action", required=True); begin.set_defaults(handler=command_begin)
+    begin = commands.add_parser("begin-action"); add_binding(begin); begin.add_argument("--scenario", required=True); begin.add_argument("--action", required=True); begin.add_argument("--setup-ref"); begin.set_defaults(handler=command_begin)
     observe = commands.add_parser("observe"); add_binding(observe); observe.add_argument("--category", choices=OBSERVATIONS, required=True); observe.add_argument("--evidence-ref"); observe.set_defaults(handler=command_observe)
-    complete = commands.add_parser("complete-action"); add_binding(complete); complete.add_argument("--outcome", choices=OUTCOMES, required=True); complete.add_argument("--assigned-by", required=True); complete.set_defaults(handler=command_complete)
+    complete = commands.add_parser("complete-action"); add_binding(complete); complete.add_argument("--outcome", choices=OUTCOMES, required=True); complete.add_argument("--reset-ref"); complete.add_argument("--assigned-by", required=True); complete.set_defaults(handler=command_complete)
     verdict = commands.add_parser("verdict"); add_binding(verdict); verdict.add_argument("--scenario", required=True); verdict.add_argument("--value", choices=VERDICTS, required=True); verdict.add_argument("--severity", choices=SEVERITIES, required=True); verdict.add_argument("--evidence-ref"); verdict.add_argument("--assigned-by", required=True); verdict.set_defaults(handler=command_verdict)
     feedback = commands.add_parser("feedback"); add_binding(feedback); feedback.add_argument("--kind", choices=FEEDBACK_KINDS, required=True); feedback.add_argument("--summary", required=True); feedback.add_argument("--scenario"); feedback.add_argument("--action"); feedback.add_argument("--assigned-by", required=True); feedback.set_defaults(handler=command_feedback)
     for name, handler in (("pause", command_pause), ("resume", command_resume), ("summary", command_summary)):

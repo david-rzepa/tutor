@@ -23,6 +23,7 @@ This order derives from the [research decision kernel](../../research/learning-d
 | Tune challenge and preserve healthy flow | [FLOW-CONTROLLER.md](FLOW-CONTROLLER.md) |
 | Understand creation through retirement | [LIFECYCLE.md](LIFECYCLE.md) |
 | Choose the first platform and security boundary | [PLATFORM-DECISION.md](PLATFORM-DECISION.md) |
+| Persist profiles, curricula, modules, sessions, and evidence | [Portable workspace layout](../workspace-layout/README.md) |
 | Apply safety, privacy, accessibility, or generation gates | [QUALITY-GATES.md](QUALITY-GATES.md) |
 | Audit research traceability and uncertainty | [DESIGN-BASIS.md](DESIGN-BASIS.md) |
 | Trace an age-11 French session end to end | [FRENCH-WALKTHROUGH.md](FRENCH-WALKTHROUGH.md) |

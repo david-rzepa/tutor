@@ -78,7 +78,7 @@ function renderRecall() {
 }
 
 function initialize(config) {
-  state = createActivityState(config); objective.textContent = config.objective.label; prompt.textContent = config.prompt; hint.textContent = config.scaffold.hint;
+  state = createActivityState(config); document.documentElement.dataset.subject = config.activity_id.split("_")[0]; objective.textContent = config.objective.label; prompt.textContent = config.prompt; hint.textContent = config.scaffold.hint;
   if (config.mechanic === "choice") renderChoice();
   if (config.mechanic === "sequence") renderSequence();
   if (config.mechanic === "recall") renderRecall();

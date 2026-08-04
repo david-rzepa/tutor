@@ -9,6 +9,8 @@ Both paths are validated against [budget.js](budget.js), run in the same opaque-
 
 Every reviewed activity declares a learner persona. `age-11` is the child-facing acceptance baseline; `adult` and `caregiver-mediated` are explicit alternatives. A persona controls wording and presentation choices only—it must not be used to infer ability, diagnosis, or a fixed learning style. Prompts should read as direct questions with an obvious response action.
 
+The shared visual system uses calm cards, large controls, strong visible focus, and a restrained subject accent: green for science, purple for music, and blue for adult math. Labels and structure carry every meaning; color and motion never act as the only signal.
+
 ## Build the synthetic examples
 
 ```powershell

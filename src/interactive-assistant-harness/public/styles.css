@@ -1,7 +1,7 @@
-:root { color-scheme: light dark; font-family: system-ui, sans-serif; line-height: 1.5; }
-body { margin: 0; background: Canvas; color: CanvasText; }
-main { max-width: 52rem; margin: auto; padding: clamp(.75rem, 3vw, 2rem); }
+:root { color-scheme: light; font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.5; background: #e7edf5; }
+body { margin: 0; background: #e7edf5; color: #17243b; }
+main { max-width: 52rem; margin: auto; padding: clamp(.35rem, 2vw, 1rem); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-iframe:focus-visible { outline: .2rem solid Highlight; outline-offset: .2rem; }
-iframe { width: 100%; min-height: 20rem; border: 1px solid GrayText; border-radius: .5rem; }
+iframe:focus-visible { outline: .2rem solid #17243b; outline-offset: .15rem; }
+iframe { width: 100%; height: calc(100vh - 2rem); min-height: 24rem; border: 0; border-radius: 1rem; background: white; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }

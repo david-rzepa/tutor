@@ -20,8 +20,8 @@
   "files": [
     {
       "path": "app/app.js",
-      "bytes": 2907,
-      "sha256": "6d1901be857953f70f773a2ae5a6c573ac744fee6f021f5991856a121642f200"
+      "bytes": 2960,
+      "sha256": "5e0dfb646b5fa8f5edb544302e2c5a5931128c71bb986a2cc5ad17b1cd3d30eb"
     },
     {
       "path": "app/index.html",
@@ -30,8 +30,8 @@
     },
     {
       "path": "app/style.css",
-      "bytes": 736,
-      "sha256": "a2fa57e2a9a8d0a734b69e5b767059ad14404305bda445962d5978a649cddbfa"
+      "bytes": 2074,
+      "sha256": "5c678c81d071e2ea367832f6d85c4d40500aab45d8bb625998efd985e8917092"
     }
   ],
   "budget": {

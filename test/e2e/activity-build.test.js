@@ -55,6 +55,22 @@ test("template and generated paths expose one bounded learner help action", asyn
   }
 });
 
+test("activity paths share an accessible subject-aware visual system", async () => {
+  const templateStyle = await readFile(path.resolve("examples/interactive-assistants/template/card.css"), "utf8");
+  const templateScript = await readFile(path.resolve("examples/interactive-assistants/template/card.js"), "utf8");
+  const generatedStyle = await readFile(path.resolve("examples/interactive-assistants/sources/adult-math-app/style.css"), "utf8");
+  const generatedScript = await readFile(path.resolve("examples/interactive-assistants/sources/adult-math-app/app.js"), "utf8");
+  for (const style of [templateStyle, generatedStyle]) {
+    assert.match(style, /--accent:/);
+    assert.match(style, /:focus-visible/);
+    assert.match(style, /prefers-reduced-motion: reduce/);
+    assert.match(style, /min-height: 2\.9rem/);
+  }
+  assert.match(templateStyle, /data-subject="music"/);
+  assert.match(templateScript, /dataset\.subject/);
+  assert.match(generatedScript, /dataset\.subject = "math"/);
+});
+
 test("unsafe generated code falls back deterministically to a reviewed card", async () => {
   const base = await mkdtemp(path.join(os.tmpdir(), "tutor-unsafe-app-"));
   const source = path.join(base, "source");

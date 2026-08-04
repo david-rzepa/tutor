@@ -1,4 +1,5 @@
 (() => {
+  document.documentElement.dataset.subject = "math";
   const protocol = "tutor.assistant/v1";
   const sessionId = new URLSearchParams(location.search).get("session");
   const prompt = document.querySelector("#prompt");

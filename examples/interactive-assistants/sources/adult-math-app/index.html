@@ -8,14 +8,24 @@
   </head>
   <body>
     <main>
-      <h2 id="prompt">Waiting for the estimate…</h2>
-      <section id="response" aria-labelledby="prompt"><label>Your estimate <input required autocomplete="off"></label><button id="check" type="button">Check</button></section>
-      <p id="hint" hidden></p>
-      <div id="help-actions"><button id="help" type="button">Help</button></div>
-      <p role="status" aria-live="polite"></p>
-      <section id="completion" tabindex="-1" hidden>
-        <h2>Activity complete</h2>
-        <p>There are no more questions in this activity.</p>
+      <section id="intro" class="stage" tabindex="-1" aria-labelledby="prompt">
+        <h2 id="prompt">Waiting for the estimateâ€¦</h2>
+        <button id="continue" type="button">Continue</button>
+      </section>
+      <section id="question" class="stage" tabindex="-1" aria-labelledby="question-prompt" hidden>
+        <h2 id="question-prompt"></h2>
+        <div id="response"><label>Your estimate <input required autocomplete="off"></label><button id="check" type="button">Check</button></div>
+        <div id="help-actions"><button id="help" type="button">Help</button></div>
+      </section>
+      <section id="guidance" class="stage" tabindex="-1" aria-labelledby="guidance-title" hidden>
+        <h2 id="guidance-title">Let's try that again</h2>
+        <p id="feedback" role="status" aria-live="polite"></p>
+        <p id="hint"></p>
+        <button id="retry" type="button">Continue</button>
+      </section>
+      <section id="completion" class="stage" tabindex="-1" aria-labelledby="completion-title" hidden>
+        <h2 id="completion-title">Activity complete</h2>
+        <p id="completion-message">There are no more questions in this activity.</p>
       </section>
     </main>
     <script src="app.js"></script>

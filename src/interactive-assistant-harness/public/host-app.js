@@ -100,12 +100,31 @@ async function runTutorSession(sessionId, token) {
     render(await response.json());
   }
 
-  function addText(kind, text) {
+  function addText(kind, text, sources = []) {
     const item = document.createElement("li");
     item.className = `event event--${kind}`;
     const paragraph = document.createElement("p");
     paragraph.textContent = text;
     item.append(paragraph);
+    if (sources.length) {
+      const details = document.createElement("details");
+      details.className = "message-details";
+      const summary = document.createElement("summary");
+      summary.textContent = "ⓘ More info";
+      const list = document.createElement("ul");
+      for (const source of sources) {
+        const entry = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = source.url;
+        link.textContent = source.title;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        entry.append(link);
+        list.append(entry);
+      }
+      details.append(summary, list);
+      item.append(details);
+    }
     timeline.append(item);
   }
 
@@ -114,6 +133,7 @@ async function runTutorSession(sessionId, token) {
     item.className = "event event--agent activity-card";
     const heading = document.createElement("h2");
     heading.textContent = event.payload.label ?? "Try this activity";
+    heading.className = "sr-only";
     const frame = document.createElement("iframe");
     frame.title = event.payload.label ?? "Interactive learning activity";
     frame.setAttribute("sandbox", "allow-scripts");
@@ -143,7 +163,7 @@ async function runTutorSession(sessionId, token) {
     seen.add(event.sequence);
     cursor = Math.max(cursor, event.sequence);
     if (event.type === "learner.message") addText("learner", event.payload.text);
-    if (event.type === "tutor.message") { addText("agent", event.payload.text); send.disabled = false; setConnection("Tutor connected", true); }
+    if (event.type === "tutor.message") { addText("agent", event.payload.text, event.payload.sources ?? []); send.disabled = false; setConnection("Tutor connected", true); }
     if (event.type === "tutor.status") setConnection(event.payload.text, true);
     if (event.type === "activity.inline") addActivity(event);
     if (event.type === "session.stop" || event.type === "session.complete") {

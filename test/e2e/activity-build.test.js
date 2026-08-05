@@ -25,18 +25,22 @@ test("configuration and generated-code paths build inside the interactive budget
   } finally { await rm(output, { recursive: true, force: true }); }
 });
 
-test("template and generated paths provide an explicit terminal presentation", async () => {
+test("template and generated paths reveal one stage at a time and provide an explicit terminal presentation", async () => {
   const templateHtml = await readFile(path.resolve("examples/interactive-assistants/template/index.html"), "utf8");
   const templateScript = await readFile(path.resolve("examples/interactive-assistants/template/card.js"), "utf8");
   const generatedHtml = await readFile(path.resolve("examples/interactive-assistants/sources/adult-math-app/index.html"), "utf8");
   const generatedScript = await readFile(path.resolve("examples/interactive-assistants/sources/adult-math-app/app.js"), "utf8");
   for (const html of [templateHtml, generatedHtml]) {
+    assert.match(html, /id="intro"[^>]*class="stage"/);
+    assert.match(html, /id="continue"[^>]*>Continue</);
+    assert.match(html, /id="question"[^>]*hidden/);
+    assert.match(html, /id="guidance"[^>]*hidden/);
     assert.match(html, />Activity complete</);
     assert.match(html, /There are no more questions in this activity\./);
   }
   for (const script of [templateScript, generatedScript]) {
-    assert.match(script, /completion\.hidden = false/);
-    assert.match(script, /completion\.focus\(\)/);
+    assert.match(script, /function showStage\(stage\)/);
+    assert.match(script, /showStage\(completion\)/);
   }
 });
 
@@ -49,9 +53,10 @@ test("template and generated paths expose one bounded learner help action", asyn
     const html = await readFile(path.resolve(htmlPath), "utf8");
     const script = await readFile(path.resolve(scriptPath), "utf8");
     assert.match(html, /id="help"[^>]*>Help</);
-    assert.match(html, /id="hint" hidden/);
+    assert.match(html, /id="guidance"[^>]*hidden/);
     assert.match(script, /send\("help\.requested"/);
     assert.match(script, /help\.remove\(\)/);
+    assert.match(script, /showGuidance\("Here is a hint"/);
   }
 });
 

@@ -13,12 +13,15 @@ iframe { width: 100%; height: calc(100vh - 2rem); min-height: 24rem; border: 0; 
 .timeline { display: flex; flex-direction: column; gap: .9rem; margin: 0; padding: 0 0 1rem; list-style: none; }
 .event { max-width: 85%; border-radius: 1rem; padding: .8rem 1rem; box-shadow: 0 .2rem .8rem rgb(23 36 59 / 8%); }
 .event p { margin: 0; white-space: pre-wrap; }
+.message-details { margin-top: .65rem; color: #52637b; font-size: .9rem; }
+.message-details summary { width: fit-content; cursor: pointer; font-weight: 700; }
+.message-details ul { margin: .5rem 0 0; padding-inline-start: 1.25rem; }
+.message-details a { color: #174f9d; }
 .event--learner { align-self: flex-end; background: #1e66d0; color: #fff; border-bottom-right-radius: .3rem; }
 .event--agent { align-self: flex-start; background: #fff; border-bottom-left-radius: .3rem; }
 .event--notice { align-self: center; max-width: 100%; background: transparent; box-shadow: none; color: #52637b; font-size: .95rem; }
-.activity-card { align-self: stretch; max-width: 100%; padding: .65rem; background: #fff; border: .08rem solid #cad4e1; }
-.activity-card h2 { margin: .2rem .35rem .65rem; font-size: 1.15rem; }
-.activity-card iframe { height: 28rem; min-height: 22rem; border: .08rem solid #d8e0ea; }
+.activity-card { align-self: stretch; max-width: 100%; padding: 0; background: transparent; border-radius: 0; box-shadow: none; }
+.activity-card iframe { height: 24rem; min-height: 20rem; border: 0; border-radius: .75rem; }
 .composer { position: sticky; bottom: 0; margin-top: .5rem; padding: .8rem; border-radius: 1rem; background: #fff; box-shadow: 0 -.2rem 1rem rgb(23 36 59 / 10%); }
 .composer label { display: block; margin-bottom: .4rem; font-weight: 700; }
 .composer-row { display: flex; gap: .65rem; align-items: stretch; }

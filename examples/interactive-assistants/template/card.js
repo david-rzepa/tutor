@@ -2,14 +2,22 @@ import { applyAdaptation, createActivityState, evaluateResponse } from "./engine
 
 const params = new URLSearchParams(location.search);
 const sessionId = params.get("session");
+const intro = document.querySelector("#intro");
+const question = document.querySelector("#question");
+const guidance = document.querySelector("#guidance");
+const completion = document.querySelector("#completion");
 const objective = document.querySelector("#objective");
 const prompt = document.querySelector("#prompt");
-const hint = document.querySelector("#hint");
+const questionPrompt = document.querySelector("#question-prompt");
+const continueButton = document.querySelector("#continue");
 const interaction = document.querySelector("#interaction");
 const helpActions = document.querySelector("#help-actions");
 const help = document.querySelector("#help");
+const guidanceTitle = document.querySelector("#guidance-title");
 const feedback = document.querySelector("#feedback");
-const completion = document.querySelector("#completion");
+const hint = document.querySelector("#hint");
+const retry = document.querySelector("#retry");
+const completionMessage = document.querySelector("#completion-message");
 let sequence = 0;
 let state;
 let pendingAdaptation;
@@ -24,44 +32,67 @@ function send(type, payload, causedBy = null, privacy = "ephemeral") {
   return messageId;
 }
 
+function showStage(stage) {
+  for (const candidate of [intro, question, guidance, completion]) candidate.hidden = candidate !== stage;
+  stage.focus();
+}
+
+function showGuidance(title, message) {
+  guidanceTitle.textContent = title;
+  feedback.textContent = message;
+  hint.textContent = state.config.scaffold.hint;
+  showStage(guidance);
+}
+
 function record(response) {
   const result = evaluateResponse(state, response);
   state = result.state;
-  feedback.textContent = state.complete
-    ? `${result.correct ? result.feedback : "This question is finished."} Activity complete.`
-    : result.feedback;
   send("attempt.recorded", {
     objective_id: state.config.objective.id, correct: result.correct, scaffold: state.scaffold,
     attempt: state.attempts, complete: state.complete
   }, null, "learning_record");
   if (result.adaptation) pendingAdaptation = send("adaptation.requested", result.adaptation);
   if (state.complete) {
-    interaction.replaceChildren();
-    helpActions.replaceChildren();
-    hint.hidden = true;
-    completion.hidden = false;
-    completion.focus();
+    completionMessage.textContent = result.correct
+      ? `${result.feedback} There are no more questions in this activity.`
+      : "This activity is finished. There are no more questions in this activity.";
+    showStage(completion);
   }
+  else showGuidance("Let's try that again", result.feedback);
 }
 
 function renderChoice() {
-  const group = document.createElement("div"); group.className = "choices"; group.setAttribute("role", "group"); group.setAttribute("aria-labelledby", "prompt");
+  const group = document.createElement("div");
+  group.className = "choices";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-labelledby", "question-prompt");
   for (const item of state.config.items) {
-    const button = document.createElement("button"); button.type = "button"; button.textContent = item.label;
-    button.addEventListener("click", () => record(item.id)); group.append(button);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = item.label;
+    button.addEventListener("click", () => record(item.id));
+    group.append(button);
   }
   interaction.replaceChildren(group);
 }
 
 function renderSequence() {
   const chosen = [];
-  const output = document.createElement("p"); output.setAttribute("aria-live", "polite");
-  const group = document.createElement("div"); group.className = "choices"; group.setAttribute("role", "group"); group.setAttribute("aria-labelledby", "prompt");
+  const output = document.createElement("p");
+  output.setAttribute("aria-live", "polite");
+  const group = document.createElement("div");
+  group.className = "choices";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-labelledby", "question-prompt");
   for (const item of state.config.items) {
-    const button = document.createElement("button"); button.type = "button"; button.textContent = item.label;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = item.label;
     button.addEventListener("click", () => {
-      chosen.push(item.id); button.disabled = true; output.textContent = chosen.map((id) => state.config.items.find((entry) => entry.id === id).label).join(" → ");
-      if (chosen.length === state.config.items.length) { record(chosen); chosen.splice(0); group.querySelectorAll("button").forEach((control) => { control.disabled = state.complete; }); }
+      chosen.push(item.id);
+      button.disabled = true;
+      output.textContent = chosen.map((id) => state.config.items.find((entry) => entry.id === id).label).join(" -> ");
+      if (chosen.length === state.config.items.length) record(chosen);
     });
     group.append(button);
   }
@@ -70,28 +101,51 @@ function renderSequence() {
 
 function renderRecall() {
   const form = document.createElement("form");
-  const label = document.createElement("label"); label.textContent = "Your answer ";
-  const input = document.createElement("input"); input.required = true; input.autocomplete = "off"; label.append(input);
-  const button = document.createElement("button"); button.type = "submit"; button.textContent = "Check";
-  form.append(label, button); form.addEventListener("submit", (event) => { event.preventDefault(); record(input.value); input.select(); });
+  const label = document.createElement("label");
+  label.textContent = "Your answer ";
+  const input = document.createElement("input");
+  input.required = true;
+  input.autocomplete = "off";
+  label.append(input);
+  const button = document.createElement("button");
+  button.type = "submit";
+  button.textContent = "Check";
+  form.append(label, button);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    record(input.value);
+  });
   interaction.replaceChildren(form);
 }
 
-function initialize(config) {
-  state = createActivityState(config); document.documentElement.dataset.subject = config.activity_id.split("_")[0]; objective.textContent = config.objective.label; prompt.textContent = config.prompt; hint.textContent = config.scaffold.hint;
-  if (config.mechanic === "choice") renderChoice();
-  if (config.mechanic === "sequence") renderSequence();
-  if (config.mechanic === "recall") renderRecall();
+function renderInteraction() {
+  if (state.config.mechanic === "choice") renderChoice();
+  if (state.config.mechanic === "sequence") renderSequence();
+  if (state.config.mechanic === "recall") renderRecall();
 }
+
+function initialize(config) {
+  state = createActivityState(config);
+  document.documentElement.dataset.subject = config.activity_id.split("_")[0];
+  objective.textContent = config.objective.label;
+  prompt.textContent = config.prompt;
+  questionPrompt.textContent = config.prompt;
+  renderInteraction();
+  showStage(intro);
+}
+
+continueButton.addEventListener("click", () => showStage(question));
+retry.addEventListener("click", () => {
+  renderInteraction();
+  showStage(question);
+});
 
 help.addEventListener("click", () => {
   if (!state || state.complete || helpUsed) return;
   helpUsed = true;
-  hint.hidden = false;
   help.remove();
   send("help.requested", { objective_id: state.config.objective.id, scaffold: "hint", help_count: 1 }, null, "learning_record");
-  feedback.textContent = "Here is one hint. You can try the question now.";
-  interaction.querySelector("button,input")?.focus();
+  showGuidance("Here is a hint", "Read the hint, then continue when you are ready.");
 });
 
 addEventListener("message", (event) => {
@@ -103,18 +157,14 @@ addEventListener("message", (event) => {
     send("session.ready", { capabilities: ["attempt.recorded", "adaptation.requested", "help.requested"], build_mode: "template-config" }, message.message_id);
   }
   if (message.type === "adaptation.applied" && message.caused_by === pendingAdaptation) {
-    state = applyAdaptation(state, message.payload); pendingAdaptation = null;
-    hint.hidden = state.scaffold !== "guided";
+    state = applyAdaptation(state, message.payload);
+    pendingAdaptation = null;
   }
-  if (message.type === "session.pause") document.querySelectorAll("#interaction button, #interaction input, #help-actions button").forEach((control) => { control.disabled = true; });
-  if (message.type === "session.resume") document.querySelectorAll("#interaction button, #interaction input, #help-actions button").forEach((control) => { control.disabled = state.complete; });
+  if (message.type === "session.pause") document.querySelectorAll("button,input").forEach((control) => { control.disabled = true; });
+  if (message.type === "session.resume") document.querySelectorAll("button,input").forEach((control) => { control.disabled = false; });
   if (message.type === "session.stop") {
-    interaction.replaceChildren();
-    helpActions.replaceChildren();
     completion.querySelector("h2").textContent = "Activity ended";
     completion.querySelector("p").textContent = "You can close this page.";
-    completion.hidden = false;
-    completion.focus();
-    feedback.textContent = "Activity ended.";
+    showStage(completion);
   }
 });

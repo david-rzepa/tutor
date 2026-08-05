@@ -46,6 +46,22 @@ function validatePayload(type, payload) {
       throw new SessionBrokerError("invalid_message", "Chat text must be between 1 and 4000 characters");
     }
   }
+  if (type === "tutor.message" && payload.sources !== undefined) {
+    if (!Array.isArray(payload.sources) || payload.sources.length < 1 || payload.sources.length > 8) {
+      throw new SessionBrokerError("invalid_sources", "Optional tutor sources must contain 1 to 8 entries");
+    }
+    for (const source of payload.sources) {
+      if (!source || typeof source !== "object" || Array.isArray(source) || Object.keys(source).some((key) => !["title", "url"].includes(key)) || typeof source.title !== "string" || !source.title.trim() || source.title.length > 160 || typeof source.url !== "string" || source.url.length > 2_048) {
+        throw new SessionBrokerError("invalid_sources", "Each tutor source requires a bounded title and HTTPS URL");
+      }
+      let parsed;
+      try { parsed = new URL(source.url); }
+      catch { throw new SessionBrokerError("invalid_sources", "Each tutor source requires a bounded title and HTTPS URL"); }
+      if (parsed.protocol !== "https:" || parsed.username || parsed.password) {
+        throw new SessionBrokerError("invalid_sources", "Each tutor source requires a bounded title and HTTPS URL");
+      }
+    }
+  }
   if (type === "activity.inline" && !ACTIVITY_ID.test(payload.activity_id ?? "")) {
     throw new SessionBrokerError("invalid_activity", "Inline activity requires a safe activity ID");
   }
@@ -128,6 +144,9 @@ export class TutorSessionBroker {
     if (!MESSAGE_ID.test(messageId ?? "")) throw new SessionBrokerError("invalid_message_id", "A safe message ID is required");
     if (!ALLOWED_TYPES[role]?.has(type)) throw new SessionBrokerError("type_denied", "Event type is not allowed for this capability", 403);
     if (session.stopped && type !== "session.stop") throw new SessionBrokerError("session_stopped", "Session has ended", 409);
+    if (type === "activity.inline" && !session.events.some((event) => event.type === "learner.message")) {
+      throw new SessionBrokerError("learner_turn_required", "The learner must answer the opening prompt before an activity is shown", 409);
+    }
     const cleanPayload = validatePayload(type, payload);
     const fingerprint = canonical({ role, type, payload: cleanPayload });
     const prior = session.messages.get(messageId);

@@ -73,3 +73,28 @@ test("rejects unbounded or unauthorized browser event content", () => {
   assert.throws(() => broker.append({ ...base, type: "learner.message", payload: { text: "x".repeat(4_001) } }), { code: "invalid_message" });
   assert.throws(() => broker.append({ ...base, type: "activity.attempt", payload: { activity_id: "safe_activity", correct: "yes", attempt_count: 1 } }), { code: "invalid_activity_event" });
 });
+
+test("keeps optional sources bounded and requires the opening learner turn before an activity", () => {
+  const { broker } = fixture();
+  const session = broker.createSession();
+  const agent = { sessionId: session.session_id, token: session.agent_token, role: "agent" };
+  const sourceMessage = broker.append({
+    ...agent, messageId: "agent-sources", type: "tutor.message",
+    payload: { text: "Here is the first question.", sources: [{ title: "Trusted guide", url: "https://example.edu/guide" }] }
+  });
+  assert.equal(sourceMessage.payload.sources[0].title, "Trusted guide");
+  assert.throws(() => broker.append({
+    ...agent, messageId: "agent-too-soon", type: "activity.inline", payload: { activity_id: "safe_activity", label: "Try this" }
+  }), { code: "learner_turn_required" });
+  assert.throws(() => broker.append({
+    ...agent, messageId: "agent-bad-source", type: "tutor.message",
+    payload: { text: "Unsafe source", sources: [{ title: "Unsafe", url: "http://example.edu/guide" }] }
+  }), { code: "invalid_sources" });
+  broker.append({
+    sessionId: session.session_id, token: session.learner_token, role: "learner",
+    messageId: "learner-opening-answer", type: "learner.message", payload: { text: "I want to learn cooking" }
+  });
+  assert.doesNotThrow(() => broker.append({
+    ...agent, messageId: "agent-after-answer", type: "activity.inline", payload: { activity_id: "safe_activity", label: "Try this" }
+  }));
+});

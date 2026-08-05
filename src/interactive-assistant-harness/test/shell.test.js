@@ -30,6 +30,8 @@ test("session shell provides one browser timeline, composer, connection state, a
   assert.match(script, /type === "activity\.inline"/);
   assert.match(script, /setAttribute\("sandbox", "allow-scripts"\)/);
   assert.match(script, /type === "activity\.attempt"|post\("activity\.attempt"/);
+  assert.match(script, /summary\.textContent = "ⓘ More info"/);
+  assert.match(script, /event\.payload\.sources/);
   assert.doesNotMatch(script, /api\.openai\.com|OPENAI_API_KEY/);
 });
 

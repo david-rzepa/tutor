@@ -57,10 +57,15 @@ test("Codex CLI and browser capability complete an inline activity round trip wi
     const received = await cli("src/interactive-assistant-harness/session-cli.js", ["wait", "0"], agentEnv);
     assert.equal(received.events[0].payload.text, "Teach me cooking");
 
-    await cli("src/interactive-assistant-harness/session-cli.js", ["send", "tutor.message"], agentEnv, `\uFEFF${JSON.stringify({ text: "Let's learn one safe cooking habit." })}`);
+    await cli("src/interactive-assistant-harness/session-cli.js", ["send", "tutor.message"], agentEnv, `\uFEFF${JSON.stringify({
+      text: "Let's learn one safe cooking habit.",
+      sources: [{ title: "Cooking safely", url: "https://example.edu/cooking" }]
+    })}`);
     await cli("src/interactive-assistant-harness/session-cli.js", ["send", "activity.inline"], agentEnv, JSON.stringify({ activity_id: published.activity_id, label: "Start cooking safely" }));
     const timeline = await (await fetch(`${sessionPath}/events?after=0`, { headers: { Authorization: `Bearer ${learnerToken}`, "X-Tutor-Role": "learner" } })).json();
     assert.deepEqual(timeline.events.map((event) => event.type), ["learner.message", "tutor.message", "activity.inline"]);
+    assert.equal(timeline.events[1].payload.text.includes("https://"), false);
+    assert.deepEqual(timeline.events[1].payload.sources, [{ title: "Cooking safely", url: "https://example.edu/cooking" }]);
     assert.doesNotMatch(JSON.stringify(timeline), /OPENAI_API_KEY|api\.openai\.com/);
   } finally {
     await new Promise((resolve) => harness.server.close(resolve));
